@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "python-3.12", "web"]
+modules = ["nodejs-20", "python-3.12", "web", "postgresql-16"]
 [nix]
 channel = "stable-25_05"
 
@@ -68,6 +68,8 @@ defaultBucketID = "replit-objstore-ee52125a-7ef9-4c14-a221-3b1abc6ac4b1"
 [userenv]
 
 [userenv.shared]
+CRM_INTERNAL_TOKEN = "dev-crm-internal-token-secret"
+NODE_ENV = "development"
 
 [userenv.development]
 

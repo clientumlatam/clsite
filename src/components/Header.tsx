@@ -49,6 +49,7 @@ export function Header({ activeTab, setActiveTab, currency, setCurrency, region,
     brochure_generator: { title: 'Brochure PDF Generator', subtitle: 'Create and export customized industry-specific marketing materials with CRM variables' },
     outreach_agent: { title: 'Outreach Agent Sequences', subtitle: 'Automated personalized follow-up sequences, scheduling, and tracking' },
     public_website: { title: 'Sitio Web de la Agencia & LMS', subtitle: 'Ver portal público de Clientum, catálogo de soluciones y Academia LMS' },
+    workflow: { title: 'Workflow de Inicio a Fin', subtitle: 'Secuencia recomendada de uso — de configuración hasta analytics & ROI' },
   };
 
   return (

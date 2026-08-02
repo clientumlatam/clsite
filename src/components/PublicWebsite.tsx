@@ -795,6 +795,58 @@ export default function PublicWebsite({
     { id: "reportes", label: "Business Intelligence", desc: "Métricas y reportes accionables de tu negocio", icon: BarChart2, color: "text-fuchsia-500 bg-fuchsia-50" },
     { id: "ecommerce", label: "E-Commerce", desc: "Vendé online, integrado a tu CRM y stock", icon: ShoppingCart, color: "text-orange-500 bg-orange-50", query: "ecommerce" },
   ], []);
+
+  /* ─── Mega-menu groups (desktop only) ─── */
+  const SOLUTIONS_GROUPS = useMemo(() => [
+    {
+      key: "crm",
+      title: "CRM & Pipeline",
+      accent: "border-blue-500",
+      headerColor: "text-blue-700",
+      items: [
+        { id: "crm_inteligente", label: "CRM Inteligente", desc: "Kanban de oportunidades y gestión de deals", icon: Briefcase, color: "text-blue-500 bg-blue-50" },
+        { id: "leads",           label: "Prospección Maps IA", desc: "Descubrí negocios por zona con Gemini AI", icon: Compass, color: "text-violet-500 bg-violet-50" },
+        { id: "leads",           label: "Lead Scoring MEDDIC", desc: "Calificá leads con metodología empresarial B2B", icon: Target, color: "text-indigo-500 bg-indigo-50" },
+        { id: "reportes",        label: "Business Intelligence", desc: "CAC, LTV y métricas de conversión en tiempo real", icon: BarChart2, color: "text-fuchsia-500 bg-fuchsia-50" },
+      ],
+    },
+    {
+      key: "email",
+      title: "Email & Outreach",
+      accent: "border-amber-500",
+      headerColor: "text-amber-700",
+      items: [
+        { id: "automatizacion", label: "Campañas & Automatización", desc: "Drip email, broadcast masivo y nurturing", icon: Radio, color: "text-amber-500 bg-amber-50" },
+        { id: "chatbot",        label: "Chatbot WhatsApp 24/7", desc: "Atención automática, sin código ni IT", icon: Bot, color: "text-green-500 bg-green-50" },
+        { id: "automatizacion", label: "Agente Outreach Automático", desc: "SDR IA que prospecta y hace seguimiento solo", icon: Zap, color: "text-orange-500 bg-orange-50" },
+        { id: "portal_cliente", label: "Portal del Cliente", desc: "Autoatención, tickets y seguimiento en línea", icon: LayoutGrid, color: "text-teal-500 bg-teal-50" },
+      ],
+    },
+    {
+      key: "ia",
+      title: "IA & Contenido",
+      accent: "border-violet-500",
+      headerColor: "text-violet-700",
+      items: [
+        { id: "asistente_ia", label: "Asistente IA Gemini 2.5", desc: "Analista CMO disponible en todo momento", icon: Sparkles, color: "text-violet-500 bg-violet-50" },
+        { id: "asistente_ia", label: "Generador de Estrategias", desc: "Planes go-to-market con IA en minutos", icon: Megaphone, color: "text-rose-500 bg-rose-50" },
+        { id: "asistente_ia", label: "AI Ad Copy Studio", desc: "Copys para LinkedIn, anuncios y email", icon: FileText, color: "text-blue-500 bg-blue-50" },
+        { id: "reportes",     label: "Suite SEO Completa", desc: "Keywords, auditoría, rank tracker y calendario", icon: TrendingUp, color: "text-emerald-500 bg-emerald-50" },
+      ],
+    },
+    {
+      key: "platform",
+      title: "Plataforma & Tech",
+      accent: "border-slate-400",
+      headerColor: "text-slate-700",
+      items: [
+        { id: "integraciones", label: "60+ Integraciones", desc: "WhatsApp, ERP, APIs, webhooks y más", icon: Workflow, color: "text-emerald-500 bg-emerald-50" },
+        { id: "afip",          label: "Facturación AFIP", desc: "Facturá electrónicamente sin salir del CRM", icon: FileText, color: "text-blue-700 bg-blue-50" },
+        { id: "mercadopago",   label: "Cobros MercadoPago", desc: "Suscripciones y links de pago automáticos", icon: CreditCard, color: "text-sky-600 bg-sky-50" },
+        { id: "desarrollo_web",label: "Desarrollo Web", desc: "Tu sitio conectado al CRM desde el día 1", icon: Code2, color: "text-slate-600 bg-slate-100" },
+      ],
+    },
+  ], []);
   // Directorio de industrias — reutiliza los mismos 9 sectores con casos de
   // éxito reales (PROJECTS) para no inventar contenido sin respaldo.
   const INDUSTRIES_ITEMS = useMemo(() => [
@@ -829,14 +881,14 @@ export default function PublicWebsite({
   ], [authUser]);
 
   const menuConfig = useMemo(() => [
-    { id: "inicio", label: "Inicio", type: "link" as const },
-    { id: "soluciones", label: "Soluciones", type: "dropdown" as const, children: SOLUTIONS_ITEMS },
-    { id: "industrias", label: "Industrias", type: "link" as const },
-    { id: "casos", label: "Casos de Éxito", type: "link" as const },
-    { id: "recursos", label: "Recursos", type: "dropdown" as const, children: RECURSOS_ITEMS },
-    { id: "planes", label: "Precios", type: "link" as const },
-    { id: "empresa", label: "Empresa", type: "dropdown" as const, children: EMPRESA_ITEMS },
-  ], [SOLUTIONS_ITEMS, RECURSOS_ITEMS, EMPRESA_ITEMS]);
+    { id: "inicio",     label: "Inicio",        type: "link"     as const },
+    { id: "soluciones", label: "Soluciones",     type: "megamenu" as const, children: SOLUTIONS_ITEMS, groups: SOLUTIONS_GROUPS },
+    { id: "industrias", label: "Industrias",     type: "link"     as const },
+    { id: "casos",      label: "Casos de Éxito", type: "link"     as const },
+    { id: "recursos",   label: "Recursos",       type: "dropdown" as const, children: RECURSOS_ITEMS },
+    { id: "planes",     label: "Precios",        type: "link"     as const },
+    { id: "empresa",    label: "Empresa",        type: "dropdown" as const, children: EMPRESA_ITEMS },
+  ], [SOLUTIONS_ITEMS, SOLUTIONS_GROUPS, RECURSOS_ITEMS, EMPRESA_ITEMS]);
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 text-slate-800 selection:bg-[#1A3461] selection:text-white relative">
@@ -857,7 +909,7 @@ export default function PublicWebsite({
         </div>
 
         {/* Desktop Menu */}
-        <nav className="hidden lg:flex items-center gap-1.5 text-sm font-semibold text-slate-600">
+        <nav className="hidden lg:flex items-center gap-0.5 text-sm font-semibold text-slate-600">
           {menuConfig.map(item => {
             if (item.type === "link") {
               const isActive = activeTab === item.id;
@@ -869,7 +921,7 @@ export default function PublicWebsite({
                     setActiveDropdown(null);
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className={`px-3 py-2 rounded-lg transition-all text-xs uppercase tracking-wider font-extrabold cursor-pointer ${
+                  className={`px-3 py-2 rounded-lg transition-all text-[11px] uppercase tracking-wider font-extrabold cursor-pointer ${
                     isActive
                       ? "bg-[#1A3461]/10 text-[#1A3461] border-b-2 border-[#1A3461] rounded-b-none"
                       : "text-slate-600 hover:text-[#1A3461] hover:bg-slate-50"
@@ -878,7 +930,120 @@ export default function PublicWebsite({
                   {item.label}
                 </button>
               );
+            } else if (item.type === "megamenu") {
+              /* ── MEGA-MENU (Soluciones) ── */
+              const isGroupActive = item.groups.some(g => g.items.some(c => c.id === activeTab));
+              return (
+                <div
+                  key={item.id}
+                  onMouseEnter={() => setActiveDropdown(item.id)}
+                  onMouseLeave={() => setActiveDropdown(null)}
+                  className="relative py-2"
+                >
+                  <button
+                    className={`px-3 py-2 rounded-lg transition-all text-[11px] uppercase tracking-wider font-extrabold cursor-pointer flex items-center gap-1 ${
+                      isGroupActive
+                        ? "bg-emerald-50/70 text-[#1A3461] border-b-2 border-emerald-500 rounded-b-none"
+                        : "text-slate-600 hover:text-[#1A3461] hover:bg-slate-50"
+                    }`}
+                  >
+                    <span>{item.label}</span>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${activeDropdown === item.id ? "rotate-180" : ""}`} />
+                  </button>
+                  <AnimatePresence>
+                    {activeDropdown === item.id && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 12, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 12, scale: 0.97 }}
+                        transition={{ duration: 0.16 }}
+                        className="absolute left-0 mt-1 bg-white border border-slate-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                        style={{ width: "780px" }}
+                      >
+                        {/* Mega-menu header */}
+                        <div className="bg-gradient-to-r from-[#0A2558] to-[#1A3461] px-5 py-3 flex items-center justify-between">
+                          <div>
+                            <p className="text-white font-black text-sm tracking-tight">Plataforma Clientum CRM</p>
+                            <p className="text-slate-300 text-[10px] mt-0.5">Suite completa de ventas, marketing e IA para PyMEs</p>
+                          </div>
+                          <button
+                            onClick={() => { setActiveTab("servicios"); setActiveDropdown(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                            className="flex items-center gap-1.5 bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-[10px] uppercase px-3 py-1.5 rounded-lg tracking-wider transition-all cursor-pointer border-0"
+                          >
+                            Ver todo <ArrowUpRight className="w-3 h-3" />
+                          </button>
+                        </div>
+                        {/* 4-column grid */}
+                        <div className="grid grid-cols-4 gap-0 p-4">
+                          {item.groups.map((group) => (
+                            <div key={group.key} className={`pr-4 ${group.key !== "platform" ? "border-r border-slate-100 mr-4" : ""}`}>
+                              <p className={`text-[9px] font-black uppercase tracking-widest mb-2.5 ${group.headerColor} flex items-center gap-1.5`}>
+                                <span className={`inline-block w-2.5 h-2.5 rounded-full border-2 ${group.accent}`}></span>
+                                {group.title}
+                              </p>
+                              <div className="flex flex-col gap-0.5">
+                                {group.items.map((child, ci) => {
+                                  const ChildIcon = child.icon;
+                                  const isChildActive = activeTab === child.id;
+                                  return (
+                                    <button
+                                      key={`${group.key}-${ci}`}
+                                      onClick={() => {
+                                        if ((child as any).query) {
+                                          setActiveTab("catalogo");
+                                          setCatalogQuery((child as any).query);
+                                          setCatalogCat("");
+                                          setCatalogPage(1);
+                                        } else {
+                                          setActiveTab(child.id);
+                                        }
+                                        setActiveDropdown(null);
+                                        window.scrollTo({ top: 0, behavior: "smooth" });
+                                      }}
+                                      className={`w-full text-left px-2 py-2 rounded-xl transition-all flex items-start gap-2.5 cursor-pointer group ${
+                                        isChildActive ? "bg-emerald-50 border-l-[3px] border-emerald-500 rounded-l-none pl-1.5" : "hover:bg-slate-50"
+                                      }`}
+                                    >
+                                      <div className={`p-1.5 rounded-lg shrink-0 mt-0.5 ${child.color}`}>
+                                        <ChildIcon className="w-3.5 h-3.5" />
+                                      </div>
+                                      <div className="min-w-0">
+                                        <div className="font-bold text-[11px] text-slate-900 leading-tight flex items-center gap-1">
+                                          {child.label}
+                                          {isChildActive && <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shrink-0"></span>}
+                                        </div>
+                                        <p className="text-[9px] text-slate-400 mt-0.5 font-normal leading-snug">{child.desc}</p>
+                                      </div>
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        {/* Footer bar */}
+                        <div className="border-t border-slate-100 bg-slate-50 px-5 py-2.5 flex items-center gap-6">
+                          {[
+                            { label: "Ver Precios", id: "planes" },
+                            { label: "Casos de Éxito", id: "casos" },
+                            { label: "Solicitar Demo", id: "contacto" },
+                          ].map(link => (
+                            <button
+                              key={link.id}
+                              onClick={() => { setActiveTab(link.id); setActiveDropdown(null); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                              className="text-[10px] font-bold text-slate-500 hover:text-[#1A3461] transition-colors uppercase tracking-wider flex items-center gap-1 cursor-pointer"
+                            >
+                              {link.label} <ChevronRight className="w-3 h-3" />
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
             } else {
+              /* ── REGULAR DROPDOWN ── */
               const isChildActive = item.children.some(child => child.id === activeTab);
               return (
                 <div
@@ -888,7 +1053,7 @@ export default function PublicWebsite({
                   className="relative py-2"
                 >
                   <button
-                    className={`px-3 py-2 rounded-lg transition-all text-xs uppercase tracking-wider font-extrabold cursor-pointer flex items-center gap-1 ${
+                    className={`px-3 py-2 rounded-lg transition-all text-[11px] uppercase tracking-wider font-extrabold cursor-pointer flex items-center gap-1 ${
                       isChildActive
                         ? "bg-emerald-50/70 text-[#1A3461] border-b-2 border-emerald-500 rounded-b-none"
                         : "text-slate-600 hover:text-[#1A3461] hover:bg-slate-50"
@@ -904,7 +1069,7 @@ export default function PublicWebsite({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute left-0 mt-2 w-96 max-h-[75vh] overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-xl p-3 z-50 flex flex-col gap-1"
+                        className="absolute left-0 mt-2 w-80 max-h-[75vh] overflow-y-auto bg-white border border-slate-200 rounded-2xl shadow-xl p-3 z-50 flex flex-col gap-1"
                       >
                         {item.children.map(child => {
                           const ChildIcon = child.icon;

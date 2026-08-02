@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LogIn, LogOut, User as UserIcon, Shield, X, Loader2, KeyRound, Mail, UserPlus } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 interface SessionUser {
   id: number;
@@ -11,7 +12,7 @@ export function AuthButton() {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
 
   // Form states
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -69,33 +70,52 @@ export function AuthButton() {
         }
       }
 
-      // If input looks like email, use neon-login or register endpoint, otherwise standard login/register
       const isEmail = usernameOrEmail.includes('@');
-      let endpoint = '/api/auth/login';
-      let payload: Record<string, string> = { username: usernameOrEmail, password };
 
-      if (mode === 'register') {
-        endpoint = isEmail ? '/api/auth/neon-register' : '/api/auth/register';
-        payload = isEmail
-          ? { email: usernameOrEmail, password, name: usernameOrEmail.split('@')[0] }
-          : { username: usernameOrEmail, password };
-      } else if (isEmail) {
-        endpoint = '/api/auth/neon-login';
-        payload = { email: usernameOrEmail, password };
+      // Forgot password via Supabase (email only)
+      if (mode === 'forgot') {
+        if (!isEmail) throw new Error('Ingrese un correo válido para reestablecer la contraseña.');
+        const { error } = await supabase.auth.resetPasswordForEmail(usernameOrEmail, {
+          redirectTo: process.env.APP_URL || window.location.origin,
+        } as any);
+        if (error) throw new Error(error.message);
+        setError('Correo enviado: revisá tu bandeja para reestablecer la contraseña.');
+        return;
       }
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
+      // Use Supabase for email-based auth; keep server endpoints for username flows
+      if (isEmail) {
+        if (mode === 'register') {
+          const { data, error } = await supabase.auth.signUp({ email: usernameOrEmail, password });
+          if (error) throw new Error(error.message);
+          const u = data.user;
+          setUser(u ? { id: 0, username: u.email || usernameOrEmail, role: 'user' } : null);
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({ email: usernameOrEmail, password } as any);
+          if (error) throw new Error(error.message);
+          const u = data.user;
+          setUser(u ? { id: 0, username: u.email || usernameOrEmail, role: 'user' } : null);
+        }
+      } else {
+        // non-email fallback: call existing server endpoints
+        let endpoint = '/api/auth/login';
+        let payload: Record<string, string> = { username: usernameOrEmail, password };
+        if (mode === 'register') {
+          endpoint = '/api/auth/register';
+          payload = { username: usernameOrEmail, password };
+        }
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data?.error || 'Error al autenticar la cuenta.');
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || 'Error al autenticar la cuenta.');
+        }
+        setUser(data.user);
       }
-
-      setUser(data.user);
       setShowModal(false);
       setPassword('');
       setConfirmPassword('');
@@ -110,7 +130,11 @@ export function AuthButton() {
   const handleSignOut = async () => {
     try {
       setLoading(true);
-      await fetch('/api/auth/logout', { method: 'POST' });
+      try {
+        await supabase.auth.signOut();
+      } catch (e) {
+        // ignore
+      }
       setUser(null);
       window.dispatchEvent(new Event('auth-changed'));
     } catch (err) {
@@ -247,7 +271,7 @@ export function AuthButton() {
                   <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                   <input
                     type="password"
-                    required
+                    required={mode !== 'forgot'}
                     minLength={8}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -256,6 +280,12 @@ export function AuthButton() {
                   />
                 </div>
               </div>
+
+              {mode !== 'forgot' && (
+                <div className="text-right">
+                  <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="text-xs text-indigo-400 hover:underline">¿Olvidaste tu contraseña?</button>
+                </div>
+              )}
 
               {mode === 'register' && (
                 <div>
@@ -295,8 +325,8 @@ export function AuthButton() {
                   </>
                 ) : (
                   <>
-                    {mode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                    <span>{mode === 'login' ? 'Ingresar al sistema' : 'Crear mi cuenta'}</span>
+                    {mode === 'forgot' ? <Mail className="w-4 h-4" /> : (mode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />)}
+                    <span>{mode === 'forgot' ? 'Enviar enlace de restablecimiento' : (mode === 'login' ? 'Ingresar al sistema' : 'Crear mi cuenta')}</span>
                   </>
                 )}
               </button>

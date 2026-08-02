@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, JSX } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
@@ -74,6 +74,33 @@ import AcademiaLMS from "./Academia/AcademiaLMS";
 import serviciosCatalogo from "../data/servicios-catalogo.json";
 import categoriasServicios from "../data/categorias-servicios.json";
 import cursosLms from "../data/cursos-lms.json";
+
+function LogoImage({
+  src,
+  alt,
+  className,
+  fallback,
+}: {
+  src?: string | null;
+  alt: string;
+  className?: string;
+  fallback: React.ReactNode;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return <>{fallback}</>;
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      onError={() => setFailed(true)}
+    />
+  );
+}
 
 interface CatalogService {
   id: string;
@@ -3016,7 +3043,16 @@ export default function PublicWebsite({
                         <div className="flex items-start justify-between">
                           {logo ? (
                             <div className="h-9 flex items-center">
-                              <img src={logo} alt={name} className="h-8 max-w-[120px] object-contain" />
+                              <LogoImage
+                                src={logo}
+                                alt={name}
+                                className="h-8 max-w-[120px] object-contain"
+                                fallback={
+                                  <div className="w-9 h-9 rounded-xl bg-[#1A3461]/10 flex items-center justify-center">
+                                    <Icon className="w-4 h-4 text-[#1A3461]" />
+                                  </div>
+                                }
+                              />
                             </div>
                           ) : (
                             <div className="w-9 h-9 rounded-xl bg-[#1A3461]/10 flex items-center justify-center">
@@ -3151,7 +3187,14 @@ export default function PublicWebsite({
                          >
                           {logo && (
                             <div className={`flex items-center justify-center px-4 py-3 ${darkLogo ? "bg-slate-900" : "bg-slate-50 border-b border-slate-100"}`}>
-                              <img src={logo} alt={name} className="h-10 max-w-full object-contain" />
+                              <LogoImage
+                                src={logo}
+                                alt={name}
+                                className="h-10 max-w-full object-contain"
+                                fallback={
+                                  <Icon className={`w-5 h-5 ${darkLogo ? "text-slate-50" : "text-slate-400"}`} />
+                                }
+                              />
                             </div>
                           )}
                           <div className="px-4 py-3 flex flex-col gap-1.5">

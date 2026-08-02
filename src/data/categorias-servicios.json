@@ -1,0 +1,58 @@
+[
+  {
+    "name": "ERP",
+    "count": 62
+  },
+  {
+    "name": "Business Intelligence",
+    "count": 57
+  },
+  {
+    "name": "Marketing Digital",
+    "count": 53
+  },
+  {
+    "name": "Desarrollo Web",
+    "count": 48
+  },
+  {
+    "name": "Soporte",
+    "count": 40
+  },
+  {
+    "name": "Capacitación",
+    "count": 30
+  },
+  {
+    "name": "Hosting e Infraestructura",
+    "count": 29
+  },
+  {
+    "name": "E-Commerce",
+    "count": 24
+  },
+  {
+    "name": "Soluciones por Industria",
+    "count": 21
+  },
+  {
+    "name": "Automatización",
+    "count": 20
+  },
+  {
+    "name": "Ciberseguridad",
+    "count": 17
+  },
+  {
+    "name": "CRM",
+    "count": 12
+  },
+  {
+    "name": "Comunicación",
+    "count": 7
+  },
+  {
+    "name": "Integraciones",
+    "count": 5
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "exclude": ["node_modules", "dist", "artifacts", "public", "docs"],
+  "compilerOptions": {
+    "target": "ES2022",
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "module": "ESNext",
+    "lib": [
+      "ES2022",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "allowJs": true,
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@neondatabase/neon-js/auth/react/ui": ["./src/lib/neon-sdk/auth-react-ui.tsx"],
+      "@neondatabase/neon-js/auth/react": ["./src/lib/neon-sdk/auth-react.tsx"],
+      "@neondatabase/neon-js/auth": ["./src/lib/neon-sdk/auth.ts"],
+      "@neondatabase/neon-js/ui/css": ["./src/lib/neon-sdk/ui-css.ts"]
+    },
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
+}

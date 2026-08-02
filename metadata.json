@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix ClientumLatam AI Marketing Dashboard",
+  "description": "Professional LATAM client dashboard combined with AI Marketing Expert tools for campaign strategy, ad copy generation, SEO audit, and ROI analytics powered by Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

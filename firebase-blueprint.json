@@ -1,0 +1,40 @@
+{
+  "entities": {
+    "GeolocatedProspect": {
+      "title": "GeolocatedProspect",
+      "description": "Scraped and enriched business prospect from Google Maps",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "phone": { "type": "string" },
+        "website": { "type": "string" },
+        "rating": { "type": "number" },
+        "reviewsCount": { "type": "integer" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "enriched": { "type": "boolean" },
+        "contactName": { "type": "string" },
+        "contactRole": { "type": "string" },
+        "email": { "type": "string" },
+        "whatsapp": { "type": "string" },
+        "fitScore": { "type": "integer" },
+        "painPoint": { "type": "string" },
+        "outreachStrategy": { "type": "string" },
+        "outreachSent": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "category", "city"]
+    }
+  },
+  "firestore": {
+    "/geolocated_prospects/{prospectId}": {
+      "schema": { "$ref": "#/entities/GeolocatedProspect" },
+      "description": "Geolocated business prospects collection"
+    }
+  }
+}

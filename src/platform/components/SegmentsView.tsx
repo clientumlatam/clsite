@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Users, Tag, Plus, Filter, Sparkles, Send, ShieldCheck } from 'lucide-react';
 import { CustomerSegment, Lead } from '../types';

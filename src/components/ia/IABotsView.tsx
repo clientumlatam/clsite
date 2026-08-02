@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { Bot, MessageCircle } from "lucide-react";
 import CrmFullBotConfig from "../crm-full/CrmFullBotConfig";

@@ -75,16 +75,29 @@ export function AuthButton() {
       // Forgot password via Supabase (email only)
       if (mode === 'forgot') {
         if (!isEmail) throw new Error('Ingrese un correo válido para reestablecer la contraseña.');
-        const { error } = await supabase.auth.resetPasswordForEmail(usernameOrEmail, {
-          redirectTo: process.env.APP_URL || window.location.origin,
-        } as any);
-        if (error) throw new Error(error.message);
+        if (supabase) {
+          const { error } = await supabase.auth.resetPasswordForEmail(usernameOrEmail, {
+            redirectTo: process.env.APP_URL || window.location.origin,
+          } as any);
+          if (error) throw new Error(error.message);
+        } else {
+          // Fallback: server-side reset
+          const res = await fetch('/api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: usernameOrEmail }),
+          });
+          if (!res.ok) {
+            const d = await res.json();
+            throw new Error(d?.error || 'Error al enviar el correo.');
+          }
+        }
         setError('Correo enviado: revisá tu bandeja para reestablecer la contraseña.');
         return;
       }
 
-      // Use Supabase for email-based auth; keep server endpoints for username flows
-      if (isEmail) {
+      // Use Supabase for email-based auth when available; fallback to server endpoints
+      if (isEmail && supabase) {
         if (mode === 'register') {
           const { data, error } = await supabase.auth.signUp({ email: usernameOrEmail, password });
           if (error) throw new Error(error.message);
@@ -131,7 +144,7 @@ export function AuthButton() {
     try {
       setLoading(true);
       try {
-        await supabase.auth.signOut();
+        if (supabase) await supabase.auth.signOut();
       } catch (e) {
         // ignore
       }

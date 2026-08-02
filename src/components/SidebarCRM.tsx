@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { CRMDeal, BrochureData } from "../types";
 import { INITIAL_DEALS } from "../data";

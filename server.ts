@@ -45,16 +45,12 @@ const apiFetch = fetch as (
   init?: RequestInit,
 ) => Promise<{ ok: boolean; status: number; json<T = any>(): Promise<T>; text(): Promise<string> }>;
 
-type AuthRequest = ExpressRequest & {
-  session: any;
-  header(name: string): string | undefined;
-};
-
-type AuthResponse = ExpressResponse & {
-  headersSent?: boolean;
-  clearCookie(name: string, options?: any): ExpressResponse;
-};
-
+// ExpressRequest already has session (via the declare module below) and header().
+// ExpressResponse already has status(), json(), headersSent, clearCookie(), etc.
+// Simple aliases avoid the broken intersection that strips all methods when a
+// re-declared method's return type doesn't match the base type exactly.
+type AuthRequest = ExpressRequest;
+type AuthResponse = ExpressResponse;
 type AuthNext = NextFunction;
 
 declare module "express-session" {

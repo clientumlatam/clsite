@@ -8,7 +8,11 @@ interface SessionUser {
   role: string;
 }
 
-export function AuthButton() {
+interface AuthButtonProps {
+  compact?: boolean;
+}
+
+export function AuthButton({ compact = false }: AuthButtonProps) {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [checkingSession, setCheckingSession] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -157,6 +161,55 @@ export function AuthButton() {
     }
   };
 
+  /* ── COMPACT MODE (used inside fused pill) ── */
+  if (compact) {
+    if (checkingSession) {
+      return (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
+          <span className="hidden sm:inline">Verificando...</span>
+        </div>
+      );
+    }
+    if (user) {
+      return (
+        <>
+          <div className="flex items-center gap-2 px-3 py-1.5">
+            <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm shrink-0">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <span className="hidden md:inline text-xs font-bold text-slate-700 max-w-[100px] truncate">{user.username}</span>
+            {user.role === 'admin' && (
+              <span className="hidden lg:inline bg-amber-100 text-amber-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase">Admin</span>
+            )}
+            <button
+              onClick={handleSignOut}
+              disabled={loading}
+              title="Cerrar sesión"
+              className="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          {showModal && renderModal()}
+        </>
+      );
+    }
+    return (
+      <>
+        <button
+          onClick={() => { setError(null); setShowModal(true); }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          <span>Iniciar sesión</span>
+        </button>
+        {showModal && renderModal()}
+      </>
+    );
+  }
+
+  /* ── STANDARD MODE ── */
   if (checkingSession) {
     return (
       <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs text-slate-400">
@@ -197,156 +250,134 @@ export function AuthButton() {
     );
   }
 
+  const renderModal = () => (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+      <div className="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative text-left">
+        <button
+          onClick={() => setShowModal(false)}
+          className="absolute right-4 top-4 text-slate-400 hover:text-slate-200 transition-colors p-1"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="text-center mb-6">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 mb-3 border border-indigo-500/30">
+            <Shield className="w-6 h-6 text-indigo-400" />
+          </div>
+          <h2 className="text-xl font-bold text-white">Clientum CRM</h2>
+          <p className="text-xs text-slate-400 mt-1">
+            {mode === 'login' ? 'Accedé a tu sesión express' : 'Creá tu cuenta en el sistema'}
+          </p>
+        </div>
+
+        <div className="flex bg-slate-950 rounded-xl p-1 mb-5 border border-slate-800">
+          <button
+            type="button"
+            onClick={() => { setMode('login'); setError(null); }}
+            className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'login' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+          >
+            Iniciar sesión
+          </button>
+          <button
+            type="button"
+            onClick={() => { setMode('register'); setError(null); }}
+            className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'register' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'}`}
+          >
+            Registrarse
+          </button>
+        </div>
+
+        <form onSubmit={handleSignIn} className="space-y-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Usuario o Email</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="text"
+                required
+                value={usernameOrEmail}
+                onChange={(e) => setUsernameOrEmail(e.target.value)}
+                placeholder="usuario o vos@email.com"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-medium text-slate-300 mb-1">Contraseña</label>
+            <div className="relative">
+              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <input
+                type="password"
+                required={mode !== 'forgot'}
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          {mode !== 'forgot' && (
+            <div className="text-right">
+              <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="text-xs text-indigo-400 hover:underline">¿Olvidaste tu contraseña?</button>
+            </div>
+          )}
+
+          {mode === 'register' && (
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Confirmar Contraseña</label>
+              <div className="relative">
+                <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <input
+                  type="password"
+                  required
+                  minLength={8}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="bg-rose-950/60 border border-rose-800/80 rounded-xl p-2.5 text-xs text-rose-300 leading-snug">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /><span>Procesando...</span></>
+            ) : (
+              <>
+                {mode === 'forgot' ? <Mail className="w-4 h-4" /> : (mode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />)}
+                <span>{mode === 'forgot' ? 'Enviar enlace de restablecimiento' : (mode === 'login' ? 'Ingresar al sistema' : 'Crear mi cuenta')}</span>
+              </>
+            )}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <button
-        onClick={() => {
-          setError(null);
-          setShowModal(true);
-        }}
+        onClick={() => { setError(null); setShowModal(true); }}
         className="inline-flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm shadow-indigo-600/30 cursor-pointer"
       >
         <LogIn className="w-3.5 h-3.5" />
         <span>Iniciar sesión</span>
       </button>
-
-      {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative text-left">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute right-4 top-4 text-slate-400 hover:text-slate-200 transition-colors p-1"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="text-center mb-6">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 mb-3 border border-indigo-500/30">
-                <Shield className="w-6 h-6 text-indigo-400" />
-              </div>
-              <h2 className="text-xl font-bold text-white">Clientum CRM</h2>
-              <p className="text-xs text-slate-400 mt-1">
-                {mode === 'login' ? 'Accedé a tu sesión express' : 'Creá tu cuenta en el sistema'}
-              </p>
-            </div>
-
-            {/* Mode Switch Tabs */}
-            <div className="flex bg-slate-950 rounded-xl p-1 mb-5 border border-slate-800">
-              <button
-                type="button"
-                onClick={() => {
-                  setMode('login');
-                  setError(null);
-                }}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  mode === 'login' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Iniciar sesión
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setMode('register');
-                  setError(null);
-                }}
-                className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition-all ${
-                  mode === 'register' ? 'bg-indigo-600 text-white shadow-sm' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Registrarse
-              </button>
-            </div>
-
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Usuario o Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                  <input
-                    type="text"
-                    required
-                    value={usernameOrEmail}
-                    onChange={(e) => setUsernameOrEmail(e.target.value)}
-                    placeholder="usuario o vos@email.com"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
-                  Contraseña
-                </label>
-                <div className="relative">
-                  <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                  <input
-                    type="password"
-                    required={mode !== 'forgot'}
-                    minLength={8}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-
-              {mode !== 'forgot' && (
-                <div className="text-right">
-                  <button type="button" onClick={() => { setMode('forgot'); setError(null); }} className="text-xs text-indigo-400 hover:underline">¿Olvidaste tu contraseña?</button>
-                </div>
-              )}
-
-              {mode === 'register' && (
-                <div>
-                  <label className="block text-xs font-medium text-slate-300 mb-1">
-                    Confirmar Contraseña
-                  </label>
-                  <div className="relative">
-                    <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                    <input
-                      type="password"
-                      required
-                      minLength={8}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {error && (
-                <div className="bg-rose-950/60 border border-rose-800/80 rounded-xl p-2.5 text-xs text-rose-300 leading-snug">
-                  {error}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-2.5 rounded-xl transition-all shadow-md flex items-center justify-center space-x-2 disabled:opacity-50 cursor-pointer"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Procesando...</span>
-                  </>
-                ) : (
-                  <>
-                    {mode === 'forgot' ? <Mail className="w-4 h-4" /> : (mode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />)}
-                    <span>{mode === 'forgot' ? 'Enviar enlace de restablecimiento' : (mode === 'login' ? 'Ingresar al sistema' : 'Crear mi cuenta')}</span>
-                  </>
-                )}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+      {showModal && renderModal()}
     </>
   );
 }

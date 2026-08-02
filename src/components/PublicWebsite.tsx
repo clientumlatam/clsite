@@ -1117,24 +1117,27 @@ export default function PublicWebsite({
           })}
         </nav>
  
-        {/* Right CTA */}
-        <div className="hidden lg:flex items-center gap-3">
-          <AuthButton />
-          
-          <button
-            onClick={onBackToEditor}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs uppercase px-4 py-2.5 rounded-lg tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shadow-md font-sans border-0"
-          >
-            <Settings className="w-3.5 h-3.5 text-white animate-spin" style={{ animationDuration: "6s" }} />
-            Consola CRM
-          </button>
+        {/* Right CTA — fused split-pill: Auth | Consola CRM + Demo standalone */}
+        <div className="hidden lg:flex items-center gap-2.5">
+          {/* Fused pill */}
+          <div className="inline-flex items-stretch rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden divide-x divide-slate-200">
+            <AuthButton compact />
+            <button
+              onClick={onBackToEditor}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-colors cursor-pointer"
+            >
+              <Settings className="w-3.5 h-3.5 text-emerald-600 animate-spin" style={{ animationDuration: "6s" }} />
+              <span>Consola CRM</span>
+            </button>
+          </div>
 
+          {/* Standalone Demo CTA */}
           <button
             onClick={() => {
               setActiveTab("contacto");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="bg-[#1A3461] hover:bg-[#0d1f3c] text-white font-bold text-xs uppercase px-4 py-2.5 rounded-lg tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shadow-xs border-0"
+            className="bg-[#1A3461] hover:bg-[#0d1f3c] text-white font-bold text-xs uppercase px-4 py-2 rounded-xl tracking-wider transition-all cursor-pointer flex items-center gap-1.5 shadow-sm border-0"
           >
             Solicitar Demo
             <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />

@@ -177,18 +177,30 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
         </div>
       </div>
 
-      {/* Public Website Switcher */}
-      <div className={`p-3 border-b border-slate-800/60 bg-slate-950/25 ${isCollapsed ? 'px-2' : 'px-3'}`}>
+      {/* Quick Access Buttons */}
+      <div className={`p-3 border-b border-slate-800/60 bg-slate-950/25 flex flex-col gap-2 ${isCollapsed ? 'px-2' : 'px-3'}`}>
+        <button
+          onClick={() => setActiveTab('workflow')}
+          className={`w-full flex items-center gap-2.5 py-2 px-3 rounded-xl transition-all cursor-pointer ${
+            activeTab === 'workflow'
+              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20'
+              : 'bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 text-emerald-300'
+          } ${isCollapsed ? 'justify-center' : ''}`}
+          title="Workflow — Secuencia de uso inicio a fin"
+        >
+          <Workflow className={`w-4 h-4 ${activeTab === 'workflow' ? 'text-white' : 'text-emerald-400'}`} />
+          {!isCollapsed && <span className="text-xs font-bold font-sans">Workflow de Inicio a Fin</span>}
+        </button>
         <button
           onClick={() => setActiveTab('public_website')}
-          className={`w-full flex items-center gap-2.5 py-2.5 px-3 rounded-xl transition-all cursor-pointer ${
+          className={`w-full flex items-center gap-2.5 py-2 px-3 rounded-xl transition-all cursor-pointer ${
             activeTab === 'public_website'
               ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20'
               : 'bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-300'
           } ${isCollapsed ? 'justify-center' : ''}`}
           title="Ver Sitio Web Público & LMS Academia"
         >
-          <Globe2 className={`w-4 h-4 text-indigo-400 ${activeTab === 'public_website' ? 'text-white' : ''} animate-pulse`} />
+          <Globe2 className={`w-4 h-4 ${activeTab === 'public_website' ? 'text-white' : 'text-indigo-400 animate-pulse'}`} />
           {!isCollapsed && <span className="text-xs font-bold font-sans">Sitio Web & LMS Academia</span>}
         </button>
       </div>

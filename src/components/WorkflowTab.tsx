@@ -6,7 +6,7 @@ import {
   Compass, Kanban, ShieldCheck,
   Zap, FileText, FileSpreadsheet, Sparkles,
   Layout, FileCode, Send, Workflow, Bot,
-  Search, Globe2, TrendingUp, SeoAutomationIcon,
+  Search, Globe2, TrendingUp,
   LayoutDashboard, BarChart3, MessageSquareCode,
   ArrowDown, CheckCircle2, ChevronRight,
 } from 'lucide-react';

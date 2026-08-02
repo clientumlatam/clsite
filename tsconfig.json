@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.base.json",
   "exclude": ["node_modules", "dist", "artifacts", "public", "docs"],
   "compilerOptions": {
     "target": "ES2022",

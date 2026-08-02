@@ -15,6 +15,27 @@ import crypto from "crypto";
 
 dotenv.config();
 
+const app = express();
+const PORT = Number(process.env.PORT || 3000);
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL no está configurado");
+}
+const pgPool = new Pool({
+  connectionString: databaseUrl,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+});
+
+const PgSessionStore = connectPgSimple(session);
+const sessionStore = new PgSessionStore({
+  pool: pgPool,
+  tableName: "session",
+  createTableIfMissing: true,
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // ── Typed fetch wrapper ──────────────────────────────────────────────────────
 // @types/node and @types/express both declare a global `Response` that shadows
 // the Fetch API Response, causing TS2339 on .ok / .status / .json() / .text().
@@ -31,7 +52,7 @@ type AuthRequest = ExpressRequest & {
 
 type AuthResponse = ExpressResponse & {
   headersSent?: boolean;
-  clearCookie(name: string, options?: any): this;
+  clearCookie(name: string, options?: any): ExpressResponse;
 };
 
 type AuthNext = NextFunction;
@@ -255,7 +276,7 @@ app.post("/api/auth/register", async (req: AuthRequest, res: AuthResponse) => {
       client.release();
     }
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         console.error("Error regenerando sesión tras registro:", err);
         return res.status(500).json({ error: "Error al iniciar sesión tras el registro." });
@@ -263,7 +284,7 @@ app.post("/api/auth/register", async (req: AuthRequest, res: AuthResponse) => {
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         if (saveErr) {
           console.error("Error guardando sesión tras registro:", saveErr);
           return res.status(500).json({ error: "Error al iniciar sesión tras el registro." });
@@ -298,7 +319,7 @@ app.post("/api/auth/login", async (req: AuthRequest, res: AuthResponse) => {
       return res.status(401).json({ error: "Usuario o contraseña incorrectos." });
     }
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         console.error("Error regenerando sesión tras login:", err);
         return res.status(500).json({ error: "Error al iniciar sesión." });
@@ -306,7 +327,7 @@ app.post("/api/auth/login", async (req: AuthRequest, res: AuthResponse) => {
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         if (saveErr) {
           console.error("Error guardando sesión tras login:", saveErr);
           return res.status(500).json({ error: "Error al iniciar sesión." });
@@ -321,7 +342,7 @@ app.post("/api/auth/login", async (req: AuthRequest, res: AuthResponse) => {
 });
 
 app.post("/api/auth/logout", (req: AuthRequest, res: AuthResponse) => {
-  req.session.destroy((err) => {
+  req.session.destroy((err: Error | null) => {
     if (err) {
       console.error("Error cerrando sesión:", err);
       return res.status(500).json({ error: "Ocurrió un error al cerrar sesión." });
@@ -503,7 +524,7 @@ function createSession(
       resolve();
     }, 5000);
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         clearTimeout(timeout);
         if (!res.headersSent)
@@ -513,7 +534,7 @@ function createSession(
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         clearTimeout(timeout);
         if (!res.headersSent) {
           if (saveErr) {
@@ -3045,8 +3066,8 @@ Proporciona consejos estratégicos, creativos y prácticos. Usa el voseo argenti
 
         let generatedUrl = "";
         for (const part of response.candidates?.[0]?.content?.parts || []) {
-          if (part.inlineData) {
-            const base64EncodeString: string = part.inlineData.data;
+          if (part.inlineData && typeof part.inlineData.data === "string") {
+            const base64EncodeString = part.inlineData.data;
             generatedUrl = `data:image/png;base64,${base64EncodeString}`;
             break;
           }

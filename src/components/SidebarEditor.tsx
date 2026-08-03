@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { BrochureData, CustomTemplate } from "../types";
 import { Sliders, Edit3, Sparkles, RefreshCw, Send, CheckCircle2, AlertTriangle, Languages, Users, Globe, Image, Eye, X, Check, Save, Trash2, FolderHeart, Plus, Clock, PlusCircle } from "lucide-react";

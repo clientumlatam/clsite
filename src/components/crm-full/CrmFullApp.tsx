@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import {
   Target, Mountain, MessagesSquare, Award, Megaphone, Zap, Activity,

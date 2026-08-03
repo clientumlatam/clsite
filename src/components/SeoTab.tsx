@@ -3,7 +3,7 @@ import { SeoAuditResult } from '../types';
 import { Search, Sparkles, Loader2, CheckCircle2, TrendingUp, Globe, Award } from 'lucide-react';
 
 export function SeoTab() {
-  const [urlOrTopic, setUrlOrTopic] = useState('latam.clientum.com/growth-crm');
+  const [urlOrTopic, setUrlOrTopic] = useState('clientum.com.ar/growth-crm');
   const [keywords, setKeywords] = useState('crm latam, software ventas mexico, automatizacion marketing');
   const [competitor, setCompetitor] = useState('HubSpot LATAM / RD Station');
 

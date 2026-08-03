@@ -10,7 +10,14 @@ interface BlockItem {
 }
 
 export function AutomationsTab() {
-  const [workflows, setWorkflows] = useState([
+  const [workflows, setWorkflows] = useState<Array<{
+    id: string;
+    name: string;
+    status: 'Active';
+    blocks: BlockItem[];
+    executions: number;
+    successRate: string;
+  }>>([
     {
       id: 'w1',
       name: 'Captura Lead de IA Chat & Disparo WhatsApp',

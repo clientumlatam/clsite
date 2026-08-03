@@ -1,4 +1,8 @@
-import express from "express";
+import express, {
+  type Request as ExpressRequest,
+  type Response as ExpressResponse,
+  type NextFunction,
+} from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI, Type } from "@google/genai";
@@ -11,6 +15,27 @@ import crypto from "crypto";
 
 dotenv.config();
 
+const app = express();
+const PORT = Number(process.env.PORT || 3000);
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  throw new Error("DATABASE_URL no está configurado");
+}
+const pgPool = new Pool({
+  connectionString: databaseUrl,
+  ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
+});
+
+const PgSessionStore = connectPgSimple(session);
+const sessionStore = new PgSessionStore({
+  pool: pgPool,
+  tableName: "session",
+  createTableIfMissing: true,
+});
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // ── Typed fetch wrapper ──────────────────────────────────────────────────────
 // @types/node and @types/express both declare a global `Response` that shadows
 // the Fetch API Response, causing TS2339 on .ok / .status / .json() / .text().
@@ -20,252 +45,13 @@ const apiFetch = fetch as (
   init?: RequestInit,
 ) => Promise<{ ok: boolean; status: number; json<T = any>(): Promise<T>; text(): Promise<string> }>;
 
-const app = express();
-app.use(express.json({ limit: "10mb" }));
-
-// This app only ever serves /api/* on Vercel (see vercel.json routes) — the
-// SPA itself is served straight from the filesystem/CDN. Without this,
-// Vercel's default "public, max-age=0, must-revalidate" caching header on
-// serverless function responses lets its edge CDN treat auth responses as
-// cacheable, which strips the Set-Cookie header before it reaches the
-// browser. That silently breaks login/register in production (the session
-// cookie never gets set) while working fine in local/dev. Force no-store on
-// every API response so cookies always reach the client.
-app.use((req, res, next) => {
-  res.setHeader("Cache-Control", "no-store");
-  next();
-});
-
-// Serve academia static course files (Articulate Rise exports).
-// Must be registered BEFORE Vite middleware so /academia/* is handled directly.
-app.use("/academia", express.static(path.join(process.cwd(), "public/academia")));
-
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
-
-// --- Auth: database pool, session store, and user routes ---
-// This app is unified on Neon Postgres for both Replit dev and Vercel
-// production, so the same database is used everywhere. If NEON_API_KEY and
-// NEON_PROJECT_ID are set, the pooled connection string is resolved live
-// from Neon's API (avoids hand-copying a connection string that can go
-// stale if it's ever rotated). Otherwise falls back to DATABASE_URL
-// (Replit's own internal Postgres) for local-only setups.
-function resolveDatabaseUrl(): string {
-  const url = process.env.NEON_DATABASE_URL || process.env.DATABASE_URL || "";
-  if (
-    !url ||
-    url.includes("localhost:5432") ||
-    url.includes("127.0.0.1:5432") ||
-    url.includes("clientum_dev") ||
-    url.includes("placeholder")
-  ) {
-    return "";
-  }
-  return url;
-}
-
-const databaseUrl = resolveDatabaseUrl();
-
-// Memory store fallbacks for local execution when PostgreSQL is not running
-interface MemoryUser {
-  id: number;
-  username: string;
-  password_hash: string;
-  role: string;
-  email?: string | null;
-  neon_auth_id?: string | null;
-  created_at: Date;
-}
-const memoryUsers: MemoryUser[] = [];
-let nextUserId = 1;
-
-interface MemoryResetToken {
-  id: number;
-  user_id: number;
-  token_hash: string;
-  expires_at: Date;
-  used_at?: Date | null;
-  created_at: Date;
-}
-const memoryTokens: MemoryResetToken[] = [];
-let nextTokenId = 1;
-
-const rawPgPool = databaseUrl
-  ? new Pool({
-      connectionString: databaseUrl,
-      ssl: /sslmode=disable/i.test(databaseUrl) ? false : { rejectUnauthorized: false },
-      connectionTimeoutMillis: 3000,
-    })
-  : null;
-
-if (rawPgPool) {
-  rawPgPool.on("error", (err) => {
-    console.warn("[DB Pool Error]", err.message);
-  });
-}
-
-async function runMemoryQuery(text: string, params: any[] = []): Promise<{ rows: any[]; rowCount: number }> {
-  const sql = text.trim();
-  const lowerSql = sql.toLowerCase();
-
-  // DDL / Transactions
-  if (
-    lowerSql.startsWith("create ") ||
-    lowerSql.startsWith("alter ") ||
-    lowerSql.startsWith("begin") ||
-    lowerSql.startsWith("commit") ||
-    lowerSql.startsWith("rollback") ||
-    lowerSql.startsWith("lock ")
-  ) {
-    return { rows: [], rowCount: 0 };
-  }
-
-  // Count users
-  if (lowerSql.includes("count(*)::int as count from users") || lowerSql.includes("count(*) from users")) {
-    return { rows: [{ count: memoryUsers.length }], rowCount: 1 };
-  }
-
-  // SELECT users
-  if (lowerSql.includes("from users")) {
-    if (lowerSql.includes("username = $1") && lowerSql.includes("email")) {
-      const target = (params[0] || "").toLowerCase();
-      const u = memoryUsers.find(
-        (x) => x.username.toLowerCase() === target || (x.email && x.email.toLowerCase() === target)
-      );
-      return { rows: u ? [u] : [], rowCount: u ? 1 : 0 };
-    }
-    if (lowerSql.includes("neon_auth_id = $1 or email = $2") || lowerSql.includes("neon_auth_id = $1")) {
-      const neonId = params[0];
-      const emailVal = (params[1] || params[0] || "").toLowerCase();
-      const u = memoryUsers.find(
-        (x) => (x.neon_auth_id && x.neon_auth_id === neonId) || (x.email && x.email.toLowerCase() === emailVal)
-      );
-      return { rows: u ? [u] : [], rowCount: u ? 1 : 0 };
-    }
-    if (lowerSql.includes("email = $1")) {
-      const target = (params[0] || "").toLowerCase();
-      const u = memoryUsers.find((x) => x.email && x.email.toLowerCase() === target);
-      return { rows: u ? [u] : [], rowCount: u ? 1 : 0 };
-    }
-    if (lowerSql.includes("username = $1")) {
-      const target = (params[0] || "").toLowerCase();
-      const u = memoryUsers.find((x) => x.username.toLowerCase() === target);
-      return { rows: u ? [u] : [], rowCount: u ? 1 : 0 };
-    }
-    if (lowerSql.includes("id = $1")) {
-      const userId = Number(params[0]);
-      const u = memoryUsers.find((x) => x.id === userId);
-      return { rows: u ? [u] : [], rowCount: u ? 1 : 0 };
-    }
-    return { rows: memoryUsers, rowCount: memoryUsers.length };
-  }
-
-  // INSERT INTO users
-  if (lowerSql.startsWith("insert into users")) {
-    const role = memoryUsers.length === 0 ? "admin" : (params[2] || "user");
-    const newUser: MemoryUser = {
-      id: nextUserId++,
-      username: params[0] || `user_${Date.now()}`,
-      password_hash: params[1] || "",
-      role: role,
-      email: params[3] || (params[0] && params[0].includes("@") ? params[0] : null),
-      neon_auth_id: params[4] || null,
-      created_at: new Date(),
-    };
-    memoryUsers.push(newUser);
-    return { rows: [{ id: newUser.id, username: newUser.username, role: newUser.role }], rowCount: 1 };
-  }
-
-  // UPDATE users
-  if (lowerSql.startsWith("update users")) {
-    if (lowerSql.includes("password_hash = $1 where id = $2")) {
-      const u = memoryUsers.find((x) => x.id === Number(params[1]));
-      if (u) u.password_hash = params[0];
-      return { rows: [], rowCount: u ? 1 : 0 };
-    }
-    if (lowerSql.includes("neon_auth_id")) {
-      const u = memoryUsers.find((x) => x.id === Number(params[3] || params[2]));
-      if (u) {
-        u.neon_auth_id = params[0];
-        if (params[1]) u.email = params[1];
-        if (params[2] && params.length > 3) u.password_hash = params[2];
-      }
-      return { rows: [], rowCount: u ? 1 : 0 };
-    }
-  }
-
-  // Password reset tokens
-  if (lowerSql.includes("from password_reset_tokens")) {
-    if (lowerSql.includes("token_hash = $1")) {
-      const tok = memoryTokens.find((x) => x.token_hash === params[0]);
-      return { rows: tok ? [tok] : [], rowCount: tok ? 1 : 0 };
-    }
-  }
-  if (lowerSql.startsWith("insert into password_reset_tokens")) {
-    const newToken: MemoryResetToken = {
-      id: nextTokenId++,
-      user_id: Number(params[0]),
-      token_hash: params[1],
-      expires_at: new Date(params[2]),
-      created_at: new Date(),
-    };
-    memoryTokens.push(newToken);
-    return { rows: [{ id: newToken.id }], rowCount: 1 };
-  }
-  if (lowerSql.startsWith("update password_reset_tokens")) {
-    const userId = Number(params[0]);
-    memoryTokens.forEach((t) => {
-      if (t.user_id === userId) t.used_at = new Date();
-    });
-    return { rows: [], rowCount: 1 };
-  }
-
-  return { rows: [], rowCount: 0 };
-}
-
-// Proxied pgPool that safely falls back if PostgreSQL is unavailable
-const pgPool = {
-  query: async (text: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }> => {
-    if (rawPgPool) {
-      try {
-        return await rawPgPool.query(text, params);
-      } catch (err: any) {
-        if (err.code === "ECONNREFUSED" || err.message?.includes("connect")) {
-          console.warn("[DB Fallback] PostgreSQL no disponible — usando in-memory DB fallback");
-          return runMemoryQuery(text, params);
-        }
-        throw err;
-      }
-    }
-    return runMemoryQuery(text, params);
-  },
-  connect: async () => {
-    if (rawPgPool) {
-      try {
-        const client = await rawPgPool.connect();
-        return client;
-      } catch (err: any) {
-        console.warn("[DB Fallback] connect() falló — usando client en memoria");
-      }
-    }
-    return {
-      query: (t: string, p?: any[]) => runMemoryQuery(t, p),
-      release: () => {},
-    };
-  },
-};
-
-let sessionStore: any = undefined;
-if (databaseUrl && rawPgPool) {
-  try {
-    const PgSession = connectPgSimple(session);
-    sessionStore = new PgSession({ pool: rawPgPool as any, tableName: "session", createTableIfMissing: true });
-    sessionStore.on("error", (err: any) => {
-      console.warn("[PgSession Error] Usando MemoryStore fallback:", err.message);
-    });
-  } catch (e) {
-    console.warn("[Session] PgSession setup omitido");
-  }
-}
+// ExpressRequest already has session (via the declare module below) and header().
+// ExpressResponse already has status(), json(), headersSent, clearCookie(), etc.
+// Simple aliases avoid the broken intersection that strips all methods when a
+// re-declared method's return type doesn't match the base type exactly.
+type AuthRequest = ExpressRequest;
+type AuthResponse = ExpressResponse;
+type AuthNext = NextFunction;
 
 declare module "express-session" {
   interface SessionData {
@@ -377,14 +163,14 @@ async function sendPasswordResetEmail(toEmail: string, token: string): Promise<v
   });
 }
 
-function requireAuth(req: express.Request, res: express.Response, next: express.NextFunction) {
+function requireAuth(req: AuthRequest, res: AuthResponse, next: AuthNext) {
   if (!req.session.userId) {
     return res.status(401).json({ error: "No autenticado." });
   }
   next();
 }
 
-async function requireAdmin(req: express.Request, res: express.Response, next: express.NextFunction) {
+async function requireAdmin(req: AuthRequest, res: AuthResponse, next: AuthNext) {
   if (!req.session.userId) {
     return res.status(401).json({ error: "No autenticado." });
   }
@@ -408,7 +194,7 @@ async function requireAdmin(req: express.Request, res: express.Response, next: e
 // ---------------------------------------------------------------------------
 // Santi SDR — API key middleware (server-to-server, Hermes → AI Prospector)
 // ---------------------------------------------------------------------------
-function requireApiKey(req: express.Request, res: express.Response, next: express.NextFunction) {
+function requireApiKey(req: AuthRequest, res: AuthResponse, next: AuthNext) {
   const key = req.header("x-api-key");
   if (!key || key !== process.env.SANTI_API_KEY) {
     return res.status(401).json({ error: "unauthorized" });
@@ -421,7 +207,7 @@ function requireApiKey(req: express.Request, res: express.Response, next: expres
 // The plugin sends the shared CRM_INTERNAL_TOKEN in the X-CRM-Token header
 // (same header and env var used by class-crm-proxy.php).
 // ---------------------------------------------------------------------------
-function requireCrmToken(req: express.Request, res: express.Response, next: express.NextFunction) {
+function requireCrmToken(req: AuthRequest, res: AuthResponse, next: AuthNext) {
   const token = req.header("x-crm-token");
   const expected = process.env.CRM_INTERNAL_TOKEN;
   if (!expected) {
@@ -434,7 +220,7 @@ function requireCrmToken(req: express.Request, res: express.Response, next: expr
   next();
 }
 
-app.post("/api/auth/register", async (req, res) => {
+app.post("/api/auth/register", async (req: AuthRequest, res: AuthResponse) => {
   try {
     const { username, password } = req.body || {};
     if (typeof username !== "string" || typeof password !== "string") {
@@ -486,7 +272,7 @@ app.post("/api/auth/register", async (req, res) => {
       client.release();
     }
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         console.error("Error regenerando sesión tras registro:", err);
         return res.status(500).json({ error: "Error al iniciar sesión tras el registro." });
@@ -494,7 +280,7 @@ app.post("/api/auth/register", async (req, res) => {
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         if (saveErr) {
           console.error("Error guardando sesión tras registro:", saveErr);
           return res.status(500).json({ error: "Error al iniciar sesión tras el registro." });
@@ -508,7 +294,7 @@ app.post("/api/auth/register", async (req, res) => {
   }
 });
 
-app.post("/api/auth/login", async (req, res) => {
+app.post("/api/auth/login", async (req: AuthRequest, res: AuthResponse) => {
   try {
     const { username, password } = req.body || {};
     if (typeof username !== "string" || typeof password !== "string") {
@@ -529,7 +315,7 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ error: "Usuario o contraseña incorrectos." });
     }
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         console.error("Error regenerando sesión tras login:", err);
         return res.status(500).json({ error: "Error al iniciar sesión." });
@@ -537,7 +323,7 @@ app.post("/api/auth/login", async (req, res) => {
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         if (saveErr) {
           console.error("Error guardando sesión tras login:", saveErr);
           return res.status(500).json({ error: "Error al iniciar sesión." });
@@ -551,8 +337,8 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-app.post("/api/auth/logout", (req, res) => {
-  req.session.destroy((err) => {
+app.post("/api/auth/logout", (req: AuthRequest, res: AuthResponse) => {
+  req.session.destroy((err: Error | null) => {
     if (err) {
       console.error("Error cerrando sesión:", err);
       return res.status(500).json({ error: "Ocurrió un error al cerrar sesión." });
@@ -720,8 +506,8 @@ async function localNeonLogin(
 // A 5-second timeout guarantees the HTTP response is always sent even if the
 // session-store callback never fires (e.g. DB connection drop).
 function createSession(
-  req: express.Request,
-  res: express.Response,
+  req: AuthRequest,
+  res: AuthResponse,
   user: { id: number; username: string; role: string },
   statusCode = 200
 ): Promise<void> {
@@ -734,7 +520,7 @@ function createSession(
       resolve();
     }, 5000);
 
-    req.session.regenerate((err) => {
+    req.session.regenerate((err: Error | null) => {
       if (err) {
         clearTimeout(timeout);
         if (!res.headersSent)
@@ -744,7 +530,7 @@ function createSession(
       req.session.userId = user.id;
       req.session.username = user.username;
       req.session.role = user.role;
-      req.session.save((saveErr) => {
+      req.session.save((saveErr: Error | null) => {
         clearTimeout(timeout);
         if (!res.headersSent) {
           if (saveErr) {
@@ -762,7 +548,7 @@ function createSession(
 }
 
 // ── Register ──────────────────────────────────────────────────────────────────
-app.post("/api/auth/neon-register", async (req, res) => {
+app.post("/api/auth/neon-register", async (req: AuthRequest, res: AuthResponse) => {
   try {
     const { email, password, name } = req.body || {};
     if (typeof email !== "string" || typeof password !== "string") {
@@ -1399,7 +1185,7 @@ function getMockIndustryCopy(industry: string): any {
         author: "Gabriela S.",
         company: "Inmobiliaria Pilar Propiedades — Buenos Aires"
       },
-      outreachEmail: `Asunto: Automatización de visitas e interesados para tu inmobiliaria 🏢\n\nHola,\n\nEspero que estés muy bien. Me pongo en contacto porque sé que en el rubro inmobiliario, la clasificación de interesados y el agendamiento de visitas físicas consume muchísimo tiempo de tus agentes.\n\nCon Clientum creamos un sistema con Chatbot de WhatsApp 24/7 and CRM especializado que ayuda a inmobiliarias a calificar interesados de forma automática según presupuesto y requisitos, agendando visitas solas.\n\n¿Tendrás 15 minutos esta semana para una charla rápida y ver cómo podemos potenciar tus propiedades?\n\nUn saludo cordial!`
+      outreachEmail: `Asunto: Automatización de visitas e interesados para tu inmobiliaria 🏢\n\nHola,\n\nEspero que estés muy bien. Me pongo en contacto porque sé que en el rubro inmobiliaria, la clasificación de interesados y el agendamiento de visitas físicas consume muchísimo tiempo de tus agentes.\n\nCon Clientum creamos un sistema con Chatbot de WhatsApp 24/7 and CRM especializado que ayuda a inmobiliarias a calificar interesados de forma automática según presupuesto y requisitos, agendando visitas solas.\n\n¿Tendrás 15 minutos esta semana para una charla rápida y ver cómo podemos potenciar tus propiedades?\n\nUn saludo cordial!`
     };
   }
 
@@ -1454,7 +1240,7 @@ function getMockIndustryCopy(industry: string): any {
         author: "Paula D.",
         company: "Clínica de Estética Vital — Neuquén"
       },
-      outreachEmail: `Asunto: Automatización de turnos y reducción de ausentismo para tu centro médico 🩺\n\nHola,\n\nEspero que estés muy bien. Me pongo en contacto porque sé que en el rubro de la salud y estética, coordinar agendas de turnos y lidiar con el ausentismo de pacientes de último minuto es un gran dolor de cabeza administrativo.\n\nCon Clientum creamos un sistema con Chatbot de WhatsApp 24/7 y CRM que permite a tus pacientes reservar turnos solos de manera ágil, y les envía recordatorios automatizados de confirmación.\n\n¿Tendrás 15 minutos esta semana para una charla rápida por Meet o una llamada y ver cómo podemos implementarlo en tu centro?\n\nUn saludo cordial!`
+      outreachEmail: `Asunto: Automatización de turnos y reducción de ausentismo para tu centro médico 🩺\n\nHola,\n\nEspero que estés muy bien. Me pongo en contacto porque sé que en el rubro de la salud y estética, coordinar agendas de turnos y lidiar con el ausentismo de pacientes de último minuto es un gran dolor de cabeza administrativo.\n\nCon Clientum creamos un sistema con Chatbot de WhatsApp 24/7 y CRM que permite a tus pacientes reservar turnos solos de manera ágil, y les envía recordatorios automáticos de confirmación.\n\n¿Tendrás 15 minutos esta semana para una charla rápida por Meet o una llamada y ver cómo podemos implementarlo en tu centro?\n\nUn saludo cordial!`
     };
   }
 
@@ -2747,7 +2533,7 @@ Responde de forma directa, vendedora y simpática.`;
 
         return res.json({ result: response.text?.trim() });
       } catch (geminiError: any) {
-        console.warn("[Gemini Fallback] Quota exhaustion / error generating chatbot answer. Trying free AI...");
+        console.warn("[Gemini Fallback] Quota exhaustion / error in chatbotAnswer. Trying free AI...");
         const freeText = await tryFreeAI(prompt);
         if (freeText) return res.json({ result: freeText });
         const fallbackAnswer = getMockChatbotAnswer(payload);
@@ -2772,7 +2558,9 @@ Texto a optimizar:
       } catch (geminiError: any) {
         console.warn("[Gemini Fallback] Quota exhaustion / error in optimizeCopy. Trying free AI...");
         const freeText = await tryFreeAI(prompt);
-        if (freeText) return res.json({ result: freeText });
+        if (freeText) {
+          try { return res.json({ result: JSON.parse(freeText) }); } catch { /* not valid JSON */ }
+        }
         const fallbackAnswer = getMockOptimizeCopy(text, goal);
         return res.json({ result: fallbackAnswer, isFallback: true });
       }
@@ -3274,8 +3062,8 @@ Proporciona consejos estratégicos, creativos y prácticos. Usa el voseo argenti
 
         let generatedUrl = "";
         for (const part of response.candidates?.[0]?.content?.parts || []) {
-          if (part.inlineData) {
-            const base64EncodeString: string = part.inlineData.data;
+          if (part.inlineData && typeof part.inlineData.data === "string") {
+            const base64EncodeString = part.inlineData.data;
             generatedUrl = `data:image/png;base64,${base64EncodeString}`;
             break;
           }
@@ -3700,7 +3488,7 @@ app.post("/api/chatbot-leads", requireAuth, async (req, res) => {
       `INSERT INTO chatbot_leads (name, phone, email, company, notes, conversation)
        VALUES ($1,$2,$3,$4,$5,$6)
        RETURNING id, name, phone, email, company, notes, status, created_at`,
-      [name.trim(), phone || null, email || null, company || null, notes || null, conversation || null],
+      [name.trim(), phone?.trim() || null, email?.trim() || null, company?.trim() || null, notes?.trim() || null, conversation?.trim() || null],
     );
     res.status(201).json({ ok: true, lead: result.rows[0] });
   } catch (error: any) {
@@ -4544,7 +4332,7 @@ app.post("/api/agent/run/prospect", async (req, res) => {
              rating  = COALESCE(EXCLUDED.rating, companies.rating),
              updated_at = NOW()
            RETURNING id, (xmax = 0) AS is_new`,
-          [name, industry, city, country, address, phone, website, rating, usedSource, JSON.stringify({ pain_point: raw.painPoint, score: raw.score })]
+          [name, industry||null, city||null, country||'Argentina', address||null, phone||null, website||null, rating||null, usedSource, JSON.stringify({ pain_point: raw.painPoint, score: raw.score })]
         );
 
         const row = upsert.rows[0];
@@ -4575,8 +4363,8 @@ app.post("/api/agent/run/prospect", async (req, res) => {
 app.post("/api/agent/run/enrich", async (req, res) => {
   try {
     const { company_id, company_name, website, domain, city, industry } = req.body ?? {};
-    if (!company_id || !company_name) {
-      return res.status(400).json({ error: "company_id y company_name son requeridos" });
+    if (!company_id) {
+      return res.status(400).json({ error: "company_id requerido" });
     }
 
     // Derive domain from website
@@ -4642,8 +4430,7 @@ app.post("/api/agent/run/enrich", async (req, res) => {
         ].filter(Boolean).join("\n");
 
         const geminiRes = await generateContentWithFallback(ai, {
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          defaultModel: "gemini-3.6-flash",
+          contents: prompt
         });
         painPoint = geminiRes.text?.trim();
       } catch {
@@ -4791,7 +4578,7 @@ app.patch("/api/companies/:id", async (req, res) => {
 
     params.push(req.params.id);
     const result = await pgPool.query(
-      `UPDATE companies SET ${updates.join(", ")}, updated_at=NOW() WHERE id=${params.length} RETURNING *`,
+      `UPDATE companies SET ${updates.join(", ")} WHERE id=${params.length} RETURNING *`,
       params
     );
     res.json(result.rows[0]);

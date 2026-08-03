@@ -110,7 +110,7 @@ const SellerForm = ({ seller, onSave, onCancel }: SellerFormProps) => {
         </div>
         <div>
           <label className="text-[10px] font-bold text-slate-400 mb-1.5 block font-mono uppercase tracking-widest">Correo Electrónico</label>
-          <input className="cockpit-input w-full font-mono" value={form.email || ''} onChange={e => set('email', e.target.value)} placeholder="op@clientum.com" />
+          <input className="cockpit-input w-full font-mono" value={form.email || ''} onChange={e => set('email', e.target.value)} placeholder="op@clientum.com.ar" />
         </div>
         <div>
           <label className="text-[10px] font-bold text-slate-400 mb-1.5 block font-mono uppercase tracking-widest">Base de Operaciones</label>

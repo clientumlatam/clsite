@@ -471,7 +471,7 @@ export default function BrochurePreview({
                     {data.chatbot.title}
                   </h3>
                   <div className="flex flex-col gap-3 mt-4">
-                    {data.chatbot.features.slice(0, 3).map((feat, idx) => (
+                    {data.chatbot.features.slice(0, 3).map((feat: any, idx: number) => (
                       <div key={idx} className="flex items-start gap-2 text-xs">
                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 flex-shrink-0 mt-0.5">
                           ✓
@@ -495,7 +495,7 @@ export default function BrochurePreview({
                 <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-xs">
                   <span className="text-[10px] font-bold text-slate-400 uppercase block mb-3 font-mono">Paso a paso del flujo</span>
                   <div className="flex flex-col gap-3">
-                    {data.chatbot.flowSteps.map((step, idx) => (
+                    {data.chatbot.flowSteps.map((step: any, idx: number) => (
                       <div key={idx} className="flex gap-2">
                         <span className="w-5 h-5 rounded-full bg-[#1A3461] text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                           {idx + 1}
@@ -540,7 +540,7 @@ export default function BrochurePreview({
                     Nuestra inteligencia artificial se conecta directamente con tu cuenta corriente de WhatsApp y facturación AFIP para darte reportes instantáneos con análisis en lenguaje natural.
                   </p>
                   <div className="flex flex-col gap-3 mt-2">
-                    {data.crm.features.slice(0, 3).map((feat, idx) => (
+                    {data.crm.features.slice(0, 3).map((feat: any, idx: number) => (
                       <div key={idx} className="flex items-start gap-2 text-xs">
                         <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 flex-shrink-0 mt-0.5">
                           ✓
@@ -612,7 +612,7 @@ export default function BrochurePreview({
 
               {/* Bento Grid of Services with Interactive Checkboxes */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                {data.services.map((serv, idx) => (
+                {data.services.map((serv: any, idx: number) => (
                   <div
                     key={idx}
                     onClick={() => {
@@ -645,7 +645,7 @@ export default function BrochurePreview({
                       </div>
                       <p className="text-[10px] text-slate-500 leading-relaxed font-light mb-2">{serv.desc}</p>
                       <div className="flex flex-col gap-0.5">
-                        {serv.bullets.slice(0, 2).map((b, bIdx) => (
+                        {serv.bullets.slice(0, 2).map((b: any, bIdx: number) => (
                           <span key={bIdx} className="text-[9px] text-slate-600 flex items-center gap-1 font-light">
                             <span className="text-[#1A3461] font-bold">✓</span> {b}
                           </span>
@@ -779,7 +779,7 @@ export default function BrochurePreview({
                   now fills two full rows of 4 instead of 5 + 3). */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-stretch">
                 {data.services[0]?.price !== undefined ? (
-                  data.services.map((serv, idx) => {
+                  data.services.map((serv: any, idx: number) => {
                     const hasSetup = serv.price !== undefined;
                     const hasMonthly = serv.monthly !== undefined;
                     const setupPrice = hasSetup ? calculatePrice(serv.price) : 0;
@@ -882,7 +882,7 @@ export default function BrochurePreview({
                               idx === 2 ? "text-slate-200" : "text-slate-600"
                             }`}
                           >
-                            {serv.bullets.map((b, bIdx) => (
+                            {serv.bullets.map((b: any, bIdx: number) => (
                               <li key={bIdx} className="flex items-start gap-1">
                                 <Check
                                   className={`w-2.5 h-2.5 flex-shrink-0 mt-0.5 ${

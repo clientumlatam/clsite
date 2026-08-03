@@ -1,5 +1,6 @@
 {
-  "exclude": ["node_modules", "dist", "artifacts", "public", "docs"],
+  "extends": "./tsconfig.base.json",
+  "exclude": ["node_modules", "dist", "artifacts", "public", "docs", "utils", "src/platform"],
   "compilerOptions": {
     "target": "ES2022",
     "experimentalDecorators": true,

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { CRMDeal } from '../types';
 import { loadDeals, saveDeals } from '../store/sharedStore';

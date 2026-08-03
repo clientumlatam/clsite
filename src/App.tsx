@@ -33,6 +33,7 @@ import { GeolocatedProspectingTab } from './components/GeolocatedProspectingTab'
 import { AnalyticsDashboardTab } from './components/AnalyticsDashboardTab';
 import { BrochureGeneratorTab } from './components/BrochureGeneratorTab';
 import { OutreachAgentTab } from './components/OutreachAgentTab';
+import { WorkflowTab } from './components/WorkflowTab';
 import { CommandPalette } from './components/CommandPalette';
 import { Breadcrumbs } from './components/Breadcrumbs';
 import PublicWebsite from './components/PublicWebsite';
@@ -157,6 +158,7 @@ export default function App() {
             {activeTab === 'link_building' && <LinkBuildingTab />}
             {activeTab === 'rank_tracker' && <RankTrackerTab />}
             {activeTab === 'seo_automation' && <SeoAutomationTab />}
+            {activeTab === 'workflow' && <WorkflowTab setActiveTab={setActiveTab} />}
           </div>
         </main>
       </div>

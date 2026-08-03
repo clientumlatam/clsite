@@ -1,0 +1,163 @@
+17:55:50.009 server.ts(172,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.010 server.ts(174,3): error TS2349: This expression is not callable.
+17:55:50.010 server.ts(179,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.011 server.ts(188,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.011 server.ts(191,5): error TS2349: This expression is not callable.
+17:55:50.011 server.ts(194,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(204,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(206,3): error TS2349: This expression is not callable.
+17:55:50.012 server.ts(219,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(222,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(224,3): error TS2349: This expression is not callable.
+17:55:50.012 server.ts(229,40): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+17:55:50.012 server.ts(231,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(234,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(237,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(245,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.012 server.ts(282,20): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(290,22): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(292,20): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(297,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(303,40): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+17:55:50.013 server.ts(305,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(319,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(325,20): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(333,22): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(335,20): error TS2339: Property 'json' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(340,16): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.013 server.ts(348,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.019 server.ts(351,16): error TS2339: Property 'json' does not exist on type 'AuthResponse'.
+17:55:50.019 server.ts(522,13): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(531,15): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(543,17): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(545,17): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(557,43): error TS2339: Property 'body' does not exist on type 'AuthRequest'.
+17:55:50.020 server.ts(559,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(562,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.020 server.ts(565,18): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.021 server.ts(601,22): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.021 server.ts(616,20): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.021 server.ts(638,8): error TS2339: Property 'status' does not exist on type 'AuthResponse'.
+17:55:50.021 server.ts(644,41): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(644,46): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(714,46): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(714,51): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(756,45): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(756,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(793,32): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(793,37): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(1991,53): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(1991,58): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2015,52): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2015,57): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2035,39): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2035,44): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2180,39): error TS7006: Parameter '_req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2180,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2207,42): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2207,47): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2248,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2248,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2289,34): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2289,39): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.021 server.ts(2289,44): error TS7006: Parameter 'next' implicitly has an 'any' type.
+17:55:50.021 server.ts(2298,11): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.021 server.ts(2298,16): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.022 server.ts(3311,49): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.022 server.ts(3311,54): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.022 server.ts(3332,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.022 server.ts(3332,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.027 server.ts(3353,50): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.028 server.ts(3353,55): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.028 server.ts(3374,51): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.028 server.ts(3374,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.028 server.ts(3402,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.029 server.ts(3402,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.033 server.ts(3485,52): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.034 server.ts(3485,57): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.035 server.ts(3506,51): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.035 server.ts(3506,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.035 server.ts(3529,64): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3529,69): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3560,57): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3560,62): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3861,37): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3861,42): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3880,36): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3880,41): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3905,40): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3905,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3921,49): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3921,54): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3938,51): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3938,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3954,47): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3954,52): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3972,36): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3972,41): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(3989,35): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(3989,40): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.036 server.ts(4010,41): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.036 server.ts(4010,46): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4028,41): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4028,46): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4073,33): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4073,38): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4142,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4142,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4158,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4158,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4208,45): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4208,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4246,40): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4246,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4276,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4276,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4367,42): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4367,47): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4501,34): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4501,39): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4532,35): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4532,40): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4555,38): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.037 server.ts(4555,43): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.037 server.ts(4569,40): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4569,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4597,39): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4597,44): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4616,45): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4616,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4648,40): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4648,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4667,34): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4667,39): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4688,35): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4688,40): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4706,34): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4706,39): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4719,35): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4719,40): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4735,40): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4735,45): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4761,41): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4761,46): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4773,37): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4773,42): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4783,38): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.038 server.ts(4783,43): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.038 server.ts(4807,44): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.039 server.ts(4807,49): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.039 server.ts(4838,57): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.039 server.ts(4838,62): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.047 server.ts(4866,45): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.048 server.ts(4866,50): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.048 server.ts(4887,58): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.048 server.ts(4887,63): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.048 server.ts(4904,51): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.049 server.ts(4904,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.049 server.ts(4924,56): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.049 server.ts(4924,61): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.049 server.ts(4943,51): error TS7006: Parameter 'req' implicitly has an 'any' type.
+17:55:50.050 server.ts(4943,56): error TS7006: Parameter 'res' implicitly has an 'any' type.
+17:55:50.050 server.ts(5068,19): error TS7006: Parameter '_req' implicitly has an 'any' type.
+17:55:50.050 server.ts(5068,25): error TS7006: Parameter 'res' implicitly has an 'any' type.

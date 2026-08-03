@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "python-3.12", "web"]
+modules = ["nodejs-20", "python-3.12", "web", "postgresql-16"]
 [nix]
 channel = "stable-25_05"
 
@@ -28,6 +28,10 @@ outputType = "webview"
 task = "shell.exec"
 args = "pnpm run dev"
 waitForPort = 5000
+
+[[ports]]
+localPort = 3000
+externalPort = 3003
 
 [[ports]]
 localPort = 5000
@@ -68,6 +72,8 @@ defaultBucketID = "replit-objstore-ee52125a-7ef9-4c14-a221-3b1abc6ac4b1"
 [userenv]
 
 [userenv.shared]
+NODE_ENV = "development"
+PORT = "5000"
 
 [userenv.development]
 

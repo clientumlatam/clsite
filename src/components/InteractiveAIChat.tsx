@@ -1,6 +1,20 @@
 import React, { useState } from "react";
-import { AIChatMessage } from "../types";
 import { AI_PRESETS_CHATS } from "../data";
+
+// Local message type — this component uses sender/text/chartData rather than
+// the global AIChatMessage shape (role/content), kept separate to avoid
+// breaking the shared type definition.
+interface ChatMessage {
+  id: string;
+  role?: 'user' | 'model';
+  sender?: 'user' | 'bot';
+  content?: string;
+  text?: string;
+  timestamp?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  chartData?: Array<{ name: string; [key: string]: any }>;
+  chartType?: string;
+}
 import {
   ResponsiveContainer,
   BarChart,
@@ -17,7 +31,7 @@ import {
 import { Bot, Send, Sparkles, MessageSquare, RefreshCw, Download, Globe, ExternalLink } from "lucide-react";
 
 export default function InteractiveAIChat() {
-  const [messages, setMessages] = useState<AIChatMessage[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: "init",
       role: "model",
@@ -64,7 +78,7 @@ export default function InteractiveAIChat() {
     else if (key === "consultas") userText = "¿Qué categorías de consultas atiende el bot de WhatsApp?";
     else if (key === "eficiencia") userText = "¿Cuánto redujo el chatbot el tiempo de respuesta?";
 
-    const newUserMessage: AIChatMessage = {
+    const newUserMessage: ChatMessage = {
       id: "u-" + Date.now(),
       role: "user",
       content: userText,
@@ -87,7 +101,7 @@ export default function InteractiveAIChat() {
     const userMsg = inputText;
     setInputText("");
 
-    const newUserMessage: AIChatMessage = {
+    const newUserMessage: ChatMessage = {
       id: "u-" + Date.now(),
       role: "user",
       content: userMsg,

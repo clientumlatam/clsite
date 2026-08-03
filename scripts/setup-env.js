@@ -29,8 +29,8 @@ const KEY_GUIDES = {
   },
   CRM_INTERNAL_TOKEN: {
     description: 'Internal security token for webhook and external integrations',
-    guide: 'Secure random token',
-    defaultValue: 'dev-crm-internal-token-secret'
+    guide: 'Secure random token — set as a Replit Secret, never hardcode',
+    defaultValue: ''
   },
   SANTI_API_KEY: {
     description: 'API key for SDR AI agent service requests',

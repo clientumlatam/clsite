@@ -49,6 +49,7 @@ export function Header({ activeTab, setActiveTab, currency, setCurrency, region,
     brochure_generator: { title: 'Brochure PDF Generator', subtitle: 'Create and export customized industry-specific marketing materials with CRM variables' },
     outreach_agent: { title: 'Outreach Agent Sequences', subtitle: 'Automated personalized follow-up sequences, scheduling, and tracking' },
     public_website: { title: 'Sitio Web de la Agencia & LMS', subtitle: 'Ver portal público de Clientum, catálogo de soluciones y Academia LMS' },
+    workflow: { title: 'Workflow de Inicio a Fin', subtitle: 'Secuencia recomendada de uso — de configuración hasta analytics & ROI' },
   };
 
   return (
@@ -120,16 +121,18 @@ export function Header({ activeTab, setActiveTab, currency, setCurrency, region,
 
         <div className="h-6 w-[1px] bg-slate-200 hidden sm:block mx-2"></div>
 
-        <div className="flex items-center space-x-3">
+        {/* Fused split-pill: Sitio Web | Auth */}
+        <div className="hidden sm:inline-flex items-stretch rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden divide-x divide-slate-200">
           <button
             onClick={() => setActiveTab('public_website')}
-            className="hidden sm:inline-flex items-center space-x-1.5 bg-indigo-50 hover:bg-indigo-100/80 text-indigo-700 text-xs font-bold px-3 py-1.5 rounded-xl border border-indigo-200/50 transition-colors shadow-2xs cursor-pointer"
             title="Ver Sitio Web de la Agencia"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
           >
-            <Globe2 className="w-3.5 h-3.5 text-indigo-600 animate-pulse" />
-            <span>Ver Sitio Web & LMS</span>
+            <Globe2 className="w-3.5 h-3.5 text-indigo-500 animate-pulse" />
+            <span className="hidden xl:inline">Sitio Web & LMS</span>
+            <span className="xl:hidden">Sitio Web</span>
           </button>
-          <AuthButton />
+          <AuthButton compact />
         </div>
       </div>
 

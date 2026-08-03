@@ -25,7 +25,13 @@ export default defineConfig(() => {
       },
     },
     server: {
-      hmr: process.env.DISABLE_HMR !== 'true',
+      hmr: process.env.DISABLE_HMR === 'true' ? false : {
+        // Replit proxies the preview through port 443. Without this, Vite's
+        // HMR reconnection logic drops the :5000 port and tries wss://<host>/
+        // (port 443 implicit) which is refused — causing the "server connection
+        // lost. Polling for restart..." loop seen in Firefox/Chrome consoles.
+        clientPort: 443,
+      },
       watch: process.env.DISABLE_HMR === 'true' ? null : {
         // nzip2 is a huge, separate WordPress/PHP repo copied for reference only —
         // it is not part of this app and watching its ~29k files exhausts the

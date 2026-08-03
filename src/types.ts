@@ -30,7 +30,8 @@ export type ActiveTab =
   | 'analytics_dashboard'
   | 'brochure_generator'
   | 'outreach_agent'
-  | 'public_website';
+  | 'public_website'
+  | 'workflow';
 
 export interface CampaignStrategy {
   executiveSummary: string;

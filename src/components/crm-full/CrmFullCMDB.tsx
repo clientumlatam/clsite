@@ -156,10 +156,10 @@ const initialData: CMDBEntry[] = [
     observaciones: '',
   },
   {
-    id: 'e-05', servicio: 'OpenRouter', url: 'https://openrouter.ai',
-    ambiente: 'Externo', tecnologia: 'API REST (LLM proxy)', funcion: 'Workspace API Keys para modelos de IA alternativos',
-    estado: 'En revisión', responsable: 'Equipo Dev', dependencias: '',
-    observaciones: 'Evaluando uso vs Gemini directo',
+    id: 'e-05', servicio: 'Google Gemini AI (Nativo & Free)', url: 'https://aistudio.google.com',
+    ambiente: 'Externo', tecnologia: 'Google Gemini API', funcion: 'Motor principal de IA sin costo adicional (100% nativo)',
+    estado: 'Activo', responsable: 'Equipo Dev', dependencias: 'GEMINI_API_KEY (secret)',
+    observaciones: 'IA oficial nativa de Google integrada en todo el ecosistema',
   },
   {
     id: 'e-06', servicio: 'Google AI Studio', url: 'https://aistudio.google.com',

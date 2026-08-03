@@ -80,7 +80,7 @@ const AGENTES: Agente[] = [
     name: 'IA & Automatización',
     role: 'CTO AI — IA',
     emoji: '🧠',
-    description: 'Especialista en enriquecimiento de datos, scoring MEDDIC y generación de brochures personalizados. Cascada: Gemini → Groq → OpenRouter.',
+    description: 'Especialista en enriquecimiento de datos, scoring MEDDIC y generación de brochures personalizados mediante Google Gemini AI.',
     skills: ['Gemini API', 'Apify Actors', 'Hunter.io', 'MEDDIC Scoring'],
     status: 'simulation',
     department: 'Técnico',
@@ -229,7 +229,7 @@ export default function CrmFullAgentes() {
               <span className="font-semibold text-sky-300">clientum.com.ar (Vercel)</span>
             </div>
             <div className="space-y-1.5 text-xs text-slate-400">
-              <p>→ <code className="text-sky-300">/api/generate</code> (Gemini/Groq/OpenRouter)</p>
+              <p>→ <code className="text-sky-300">/api/generate</code> (Google Gemini AI Nativo)</p>
               <p>→ <code className="text-sky-300">/api/santi/*</code> (SANTI_API_KEY)</p>
               <p>→ <code className="text-sky-300">/api/leads</code> (6 endpoints CRUD)</p>
               <p>→ <code className="text-sky-300">/api/places/*</code> (Google Maps IA)</p>

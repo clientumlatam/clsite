@@ -482,7 +482,7 @@ export default function AgentOSDashboard() {
         <div className="mt-4 p-3 bg-[#10B981]/5 border border-[#10B981]/20 rounded-lg">
           <p className="text-[11px] text-[#10B981] font-semibold">Stack: Replit → GitHub → Vercel → Neon PostgreSQL</p>
           <p className="text-[10px] text-slate-500 mt-0.5">
-            APIs: Google Places · Hunter.io · Gemini · OpenRouter · Apify · Firecrawl · Gmail
+            APIs: Google Places · Hunter.io · Gemini (Nativo & Free) · Apify · Firecrawl · Gmail
           </p>
         </div>
       </div>

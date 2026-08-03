@@ -88,7 +88,7 @@ export default function App() {
 
   if (activeTab === 'public_website') {
     return (
-      <div className="w-screen h-screen overflow-hidden bg-slate-900">
+      <div className="w-screen min-h-screen bg-slate-900 overflow-y-auto">
         <PublicWebsite 
           onBackToEditor={() => setActiveTab('overview')}
           authUser={currentUser}

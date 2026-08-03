@@ -161,95 +161,6 @@ export function AuthButton({ compact = false }: AuthButtonProps) {
     }
   };
 
-  /* ── COMPACT MODE (used inside fused pill) ── */
-  if (compact) {
-    if (checkingSession) {
-      return (
-        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400">
-          <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
-          <span className="hidden sm:inline">Verificando...</span>
-        </div>
-      );
-    }
-    if (user) {
-      return (
-        <>
-          <div className="flex items-center gap-2 px-3 py-1.5">
-            <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm shrink-0">
-              {user.username.charAt(0).toUpperCase()}
-            </div>
-            <span className="hidden md:inline text-xs font-bold text-slate-700 max-w-[100px] truncate">{user.username}</span>
-            {user.role === 'admin' && (
-              <span className="hidden lg:inline bg-amber-100 text-amber-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase">Admin</span>
-            )}
-            <button
-              onClick={handleSignOut}
-              disabled={loading}
-              title="Cerrar sesión"
-              className="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer disabled:opacity-50"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
-          </div>
-          {showModal && renderModal()}
-        </>
-      );
-    }
-    return (
-      <>
-        <button
-          onClick={() => { setError(null); setShowModal(true); }}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
-        >
-          <LogIn className="w-3.5 h-3.5" />
-          <span>Iniciar sesión</span>
-        </button>
-        {showModal && renderModal()}
-      </>
-    );
-  }
-
-  /* ── STANDARD MODE ── */
-  if (checkingSession) {
-    return (
-      <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs text-slate-400">
-        <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
-        <span>Verificando...</span>
-      </div>
-    );
-  }
-
-  if (user) {
-    return (
-      <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
-        <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
-          {user.username.charAt(0).toUpperCase()}
-        </div>
-        <div className="hidden md:block text-left">
-          <div className="text-xs font-bold text-slate-900 truncate max-w-[130px] flex items-center gap-1.5">
-            {user.username}
-            {user.role === 'admin' && (
-              <span className="bg-amber-100 text-amber-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md uppercase">
-                Admin
-              </span>
-            )}
-          </div>
-          <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-            <Shield className="w-3 h-3 text-emerald-500" /> Sesión Activa
-          </div>
-        </div>
-        <button
-          onClick={handleSignOut}
-          disabled={loading}
-          title="Cerrar sesión"
-          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50"
-        >
-          <LogOut className="w-4 h-4" />
-        </button>
-      </div>
-    );
-  }
-
   const renderModal = () => (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-xs p-4 animate-in fade-in duration-200">
       <div className="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl relative text-left">
@@ -367,6 +278,95 @@ export function AuthButton({ compact = false }: AuthButtonProps) {
       </div>
     </div>
   );
+
+  /* ── COMPACT MODE (used inside fused pill) ── */
+  if (compact) {
+    if (checkingSession) {
+      return (
+        <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-400" />
+          <span className="hidden sm:inline">Verificando...</span>
+        </div>
+      );
+    }
+    if (user) {
+      return (
+        <>
+          <div className="flex items-center gap-2 px-3 py-1.5">
+            <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px] shadow-sm shrink-0">
+              {user.username.charAt(0).toUpperCase()}
+            </div>
+            <span className="hidden md:inline text-xs font-bold text-slate-700 max-w-[100px] truncate">{user.username}</span>
+            {user.role === 'admin' && (
+              <span className="hidden lg:inline bg-amber-100 text-amber-700 text-[8px] font-extrabold px-1.5 py-0.5 rounded uppercase">Admin</span>
+            )}
+            <button
+              onClick={handleSignOut}
+              disabled={loading}
+              title="Cerrar sesión"
+              className="text-slate-400 hover:text-rose-500 transition-colors cursor-pointer disabled:opacity-50"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+          {showModal && renderModal()}
+        </>
+      );
+    }
+    return (
+      <>
+        <button
+          onClick={() => { setError(null); setShowModal(true); }}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-600 hover:bg-indigo-50 transition-colors cursor-pointer"
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          <span>Iniciar sesión</span>
+        </button>
+        {showModal && renderModal()}
+      </>
+    );
+  }
+
+  /* ── STANDARD MODE ── */
+  if (checkingSession) {
+    return (
+      <div className="flex items-center space-x-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-xs text-slate-400">
+        <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+        <span>Verificando...</span>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div className="flex items-center space-x-3 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl">
+        <div className="w-7 h-7 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+          {user.username.charAt(0).toUpperCase()}
+        </div>
+        <div className="hidden md:block text-left">
+          <div className="text-xs font-bold text-slate-900 truncate max-w-[130px] flex items-center gap-1.5">
+            {user.username}
+            {user.role === 'admin' && (
+              <span className="bg-amber-100 text-amber-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded-md uppercase">
+                Admin
+              </span>
+            )}
+          </div>
+          <div className="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+            <Shield className="w-3 h-3 text-emerald-500" /> Sesión Activa
+          </div>
+        </div>
+        <button
+          onClick={handleSignOut}
+          disabled={loading}
+          title="Cerrar sesión"
+          className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer disabled:opacity-50"
+        >
+          <LogOut className="w-4 h-4" />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <>

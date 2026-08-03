@@ -33,33 +33,15 @@ const CATEGORIES: { key: string; label: string; labelEs: string; icon: React.Ele
 ];
 
 const ALL_INTEGRATIONS: Integration[] = [
-  // ─── IA & LLMs ───
+  // ─── IA & LLMs (100% Google Gemini Native Free AI) ───
   {
-    id: 'gemini', name: 'Google Gemini AI', nameEs: 'Google Gemini AI',
-    desc: 'Main AI engine — prospecting, brochures, strategies, voice & chat.',
-    descEs: 'Motor principal de IA — prospección, brochures, estrategias, voz y chat.',
+    id: 'gemini', name: 'Google Gemini AI', nameEs: 'Google Gemini AI (Nativo & Free)',
+    desc: 'Motor principal de IA de Google — prospección, brochures, estrategias, voz y chat.',
+    descEs: 'Motor principal de IA de Google — prospección, brochures, estrategias, voz y chat.',
     envVar: 'GEMINI_API_KEY', category: 'ia', icon: Sparkles,
     color: 'text-violet-600 bg-violet-50', required: true,
     docsUrl: 'https://aistudio.google.com/app/apikey',
     placeholder: 'AIzaSy...',
-  },
-  {
-    id: 'groq', name: 'Groq LPU', nameEs: 'Groq LPU',
-    desc: 'Ultra-fast inference for lead classification and ad copy generation.',
-    descEs: 'Inferencia ultrarrápida para clasificación de leads y generación de copys.',
-    envVar: 'GROQ_API_KEY', category: 'ia', icon: Zap,
-    color: 'text-orange-500 bg-orange-50', required: false,
-    docsUrl: 'https://console.groq.com/keys',
-    placeholder: 'gsk_...',
-  },
-  {
-    id: 'openrouter', name: 'OpenRouter', nameEs: 'OpenRouter',
-    desc: 'Unified gateway to Claude, Llama, Mistral and 100+ models.',
-    descEs: 'Gateway unificado a Claude, Llama, Mistral y más de 100 modelos.',
-    envVar: 'OPENROUTER_API_KEY', category: 'ia', icon: Layers,
-    color: 'text-blue-500 bg-blue-50', required: false,
-    docsUrl: 'https://openrouter.ai/keys',
-    placeholder: 'sk-or-v1-...',
   },
 
   // ─── Prospección & Datos ───

@@ -54,12 +54,13 @@ interface NavGroup {
 export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
-    core: true,
-    sales: true,
-    ai_agents: true,
-    email: false,
+    config: true,
+    audience: true,
+    prospecting: true,
+    ai_content: true,
+    campaigns: true,
     seo: false,
-    system: false
+    analytics: true
   });
 
   const toggleSection = (section: string) => {
@@ -73,76 +74,87 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
 
   const navGroups: NavGroup[] = [
     {
-      key: 'core',
-      title: 'Principal & Analytics',
+      key: 'config',
+      title: '1. Configuración Inicial',
+      color: 'slate',
+      badge: '3 mod',
+      items: [
+        { id: 'settings', label: '1. Ajustes de Sistema', icon: Settings },
+        { id: 'smtp', label: '2. Servidor SMTP / API', icon: Server },
+        { id: 'import_export', label: '3. Importar / Exportar', icon: ArrowLeftRight },
+      ]
+    },
+    {
+      key: 'audience',
+      title: '2. Conocer tu Audiencia',
       color: 'indigo',
+      badge: '4 mod',
       items: [
-        { id: 'overview', label: 'Dashboard General', icon: LayoutDashboard },
-        { id: 'analytics_dashboard', label: 'Analytics & ROI', icon: BarChart3, badge: 'ROI' },
-        { id: 'chat', label: 'Asistente CMO IA', icon: MessageSquareCode },
+        { id: 'icp_builder', label: '1. Perfil ICP & Personas', icon: Target },
+        { id: 'clients', label: '2. Fichero Clientes LATAM', icon: Building2 },
+        { id: 'contacts', label: '3. Contactos y Destinatarios', icon: Users },
+        { id: 'lists', label: '4. Listas y Segmentos', icon: ListOrdered },
       ]
     },
     {
-      key: 'sales',
-      title: 'Ventas & Prospección',
+      key: 'prospecting',
+      title: '3. Prospección & Pipeline',
       color: 'emerald',
-      badge: 'Core CRM',
+      badge: '3 mod',
       items: [
-        { id: 'geolocated_prospecting', label: 'Prospección Maps IA', icon: Compass, badge: 'IA' },
-        { id: 'crm_kanban', label: 'Pipeline Sales CRM', icon: Kanban },
-        { id: 'meddic', label: 'Lead Scoring MEDDIC', icon: ShieldCheck },
-        { id: 'icp_builder', label: 'Perfil ICP & Personas', icon: Target },
-        { id: 'clients', label: 'Fichero Clientes LATAM', icon: Building2 },
+        { id: 'geolocated_prospecting', label: '1. Prospección Maps IA', icon: Compass, badge: 'IA' },
+        { id: 'crm_kanban', label: '2. Pipeline Sales CRM', icon: Kanban },
+        { id: 'meddic', label: '3. Lead Scoring MEDDIC', icon: ShieldCheck },
       ]
     },
     {
-      key: 'ai_agents',
-      title: 'IA Hub & Agentes',
+      key: 'ai_content',
+      title: '4. IA & Generación de Contenido',
       color: 'purple',
-      badge: 'Gemini 2.5',
+      badge: '4 mod',
       items: [
-        { id: 'ai_hub', label: 'Gemini AI & Voice Hub', icon: Sparkles, badge: 'Voice' },
-        { id: 'outreach_agent', label: 'Agente Outreach Auto', icon: Bot },
-        { id: 'strategy', label: 'Generador Estrategias', icon: Zap },
-        { id: 'copywriter', label: 'AI Ad Copy Studio', icon: FileText },
-        { id: 'brochure_generator', label: 'Generador Brochure PDF', icon: FileSpreadsheet },
+        { id: 'strategy', label: '1. Generador Estrategias', icon: Zap, badge: 'Gemini' },
+        { id: 'copywriter', label: '2. AI Ad Copy Studio', icon: FileText },
+        { id: 'brochure_generator', label: '3. Generador Brochure PDF', icon: FileSpreadsheet },
+        { id: 'ai_hub', label: '4. Gemini AI & Voice Hub', icon: Sparkles, badge: 'Voice' },
       ]
     },
     {
-      key: 'email',
-      title: 'Email Marketing & Drip',
+      key: 'campaigns',
+      title: '5. Campañas & Automatización',
       color: 'amber',
+      badge: '5 mod',
       items: [
-        { id: 'email_campaigns', label: 'Campañas Email', icon: Send },
-        { id: 'automations', label: 'Flujos Automatizados', icon: Workflow },
-        { id: 'contacts', label: 'Contactos y Destinatarios', icon: Users },
-        { id: 'lists', label: 'Listas y Segmentos', icon: ListOrdered },
-        { id: 'email_template_builder', label: 'Diseñador Plantillas HTML', icon: Layout },
-        { id: 'templates', label: 'Biblioteca Plantillas', icon: FileCode },
+        { id: 'email_template_builder', label: '1. Diseñador Plantillas HTML', icon: Layout },
+        { id: 'templates', label: '2. Biblioteca Plantillas', icon: FileCode },
+        { id: 'email_campaigns', label: '3. Campañas Email', icon: Send },
+        { id: 'automations', label: '4. Flujos Automatizados', icon: Workflow },
+        { id: 'outreach_agent', label: '5. Agente Outreach Auto', icon: Bot },
       ]
     },
     {
       key: 'seo',
-      title: 'Suite SEO & Contenidos',
+      title: '6. SEO & Contenidos',
       color: 'cyan',
+      badge: '6 mod',
       items: [
-        { id: 'seo', label: 'Visión General SEO', icon: Search },
-        { id: 'keyword_research', label: 'Research de Keywords', icon: Search },
-        { id: 'topic_map', label: 'Mapa Autoridad Tópica', icon: Globe2 },
-        { id: 'on_page_audit', label: 'Auditoría On-Page', icon: ShieldCheck },
-        { id: 'content_calendar', label: 'Calendario Editorial', icon: ListOrdered },
-        { id: 'rank_tracker', label: 'Rank Tracker Latam', icon: TrendingUp },
-        { id: 'seo_automation', label: 'SEO Automations', icon: Workflow },
+        { id: 'keyword_research', label: '1. Research de Keywords', icon: Search },
+        { id: 'topic_map', label: '2. Mapa Autoridad Tópica', icon: Globe2 },
+        { id: 'on_page_audit', label: '3. Auditoría On-Page', icon: ShieldCheck },
+        { id: 'content_calendar', label: '4. Calendario Editorial', icon: ListOrdered },
+        { id: 'rank_tracker', label: '5. Rank Tracker Latam', icon: TrendingUp },
+        { id: 'seo_automation', label: '6. SEO Automations', icon: Workflow },
       ]
     },
     {
-      key: 'system',
-      title: 'Configuración & Datos',
-      color: 'slate',
+      key: 'analytics',
+      title: '7. Analytics & ROI',
+      color: 'indigo',
+      badge: '3 mod',
       items: [
-        { id: 'import_export', label: 'Importar / Exportar', icon: ArrowLeftRight },
-        { id: 'smtp', label: 'Servidor SMTP / API', icon: Server },
-        { id: 'settings', label: 'Ajustes de Sistema', icon: Settings },
+        { id: 'overview', label: '1. Dashboard General', icon: LayoutDashboard },
+        { id: 'analytics_dashboard', label: '2. Analytics & ROI', icon: BarChart3, badge: 'ROI' },
+        { id: 'chat', label: '3. Asistente CMO IA', icon: MessageSquareCode },
       ]
     }
   ];

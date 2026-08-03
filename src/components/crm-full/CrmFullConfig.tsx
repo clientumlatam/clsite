@@ -192,13 +192,11 @@ export default function CrmFullConfig() {
         <div className="grid md:grid-cols-3 gap-2 text-xs">
           {[
             { key: 'NEON_DATABASE_URL', label: 'PostgreSQL (Neon)', required: true },
-            { key: 'GEMINI_API_KEY', label: 'Google Gemini', required: true },
+            { key: 'GEMINI_API_KEY', label: 'Google Gemini (Nativo & Free)', required: true },
             { key: 'SESSION_SECRET', label: 'Auth sessions', required: true },
             { key: 'APIFY_API_TOKEN', label: 'Apify Scraping', required: false },
             { key: 'GOOGLE_MAPS_PLATFORM_KEY', label: 'Google Maps', required: false },
             { key: 'HUNTER_API_KEY', label: 'Hunter.io Enrichment', required: false },
-            { key: 'GROQ_API_KEY', label: 'Groq LLM (fallback)', required: false },
-            { key: 'OPENROUTER_API_KEY', label: 'OpenRouter (fallback)', required: false },
             { key: 'SMTP_USER / SMTP_PASS', label: 'Email SMTP', required: false },
             { key: 'SANTI_API_KEY', label: 'Hermes Agent auth', required: false },
             { key: 'VERCEL_TOKEN', label: 'Deploy Vercel', required: false },

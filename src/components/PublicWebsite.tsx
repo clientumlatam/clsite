@@ -1269,7 +1269,7 @@ export default function PublicWebsite({
       </AnimatePresence>
 
       {/* Main Pages Content with Smooth Anim Transitions */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
